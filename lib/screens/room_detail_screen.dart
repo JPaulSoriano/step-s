@@ -1,4 +1,5 @@
 import 'dart:io';
+import 'dart:math';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
@@ -29,6 +30,19 @@ class RoomDetailScreen extends StatefulWidget {
 }
 
 class _RoomDetailScreenState extends State<RoomDetailScreen> {
+  final List<String> roomImages = [
+    'images/b1.jpg',
+    'images/b2.jpg',
+    'images/b3.jpg',
+    'images/b4.jpg',
+    'images/b5.jpg',
+    'images/b6.jpg',
+    'images/b7.jpg',
+    'images/b8.jpg',
+    'images/b9.jpg',
+    'images/b10.jpg',
+  ];
+  Random random = new Random();
   List<dynamic> _announcementsList = [];
   List<dynamic> _assessmentsList = [];
   List<dynamic> _materialsList = [];
@@ -152,20 +166,47 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
       ),
       body: Column(
         children: [
-          Card(
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: ListTile(
-                title: Text(widget.room.section!),
-                subtitle: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(widget.room.section ?? ''),
-                    Text(widget.room.user!.name ?? ''),
-                  ],
+          Stack(
+            children: [
+              Container(
+                height: 140,
+                margin: EdgeInsets.all(15),
+                child: Image(
+                  image:
+                      AssetImage(roomImages[random.nextInt(roomImages.length)]),
+                  fit: BoxFit.cover,
                 ),
               ),
-            ),
+              Container(
+                margin: EdgeInsets.only(top: 30, left: 30),
+                width: 220,
+                child: Text(
+                  '${widget.room.name}',
+                  style: TextStyle(
+                    fontSize: 20,
+                    color: Colors.white,
+                    letterSpacing: 1,
+                  ),
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 58, left: 30),
+                child: Text(
+                  '${widget.room.section}',
+                  style: TextStyle(
+                      fontSize: 14, color: Colors.white, letterSpacing: 1),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 80, left: 30),
+                child: Text(
+                  '${widget.room.user!.name}',
+                  style: TextStyle(
+                      fontSize: 12, color: Colors.white54, letterSpacing: 1),
+                ),
+              ),
+            ],
           ),
           Expanded(child: _buildBody()),
         ],
@@ -224,71 +265,76 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
           itemCount: _announcementsList.length,
           itemBuilder: (BuildContext context, int index) {
             Announcement announcement = _announcementsList[index];
-            return Card(
-              child: InkWell(
-                onTap: () {
-                  Navigator.of(context).push(MaterialPageRoute(
-                      builder: (context) => CommentScreen(
-                            announcementID: announcement.id,
-                          )));
-                },
-                child: Container(
-                  padding: EdgeInsets.all(20),
-                  width: MediaQuery.of(context).size.width,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
+            return Container(
+                margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                  BoxShadow(color: Colors.black26, blurRadius: 0)
+                ]),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Container(
+                          margin:
+                              EdgeInsets.only(left: 15, top: 15, bottom: 10),
+                          child: Row(
                             children: [
-                              Container(
-                                width: 30,
-                                height: 30,
-                                decoration: BoxDecoration(
-                                    image: announcement.user!.avatar != null
-                                        ? DecorationImage(
-                                            image: NetworkImage(
-                                                '${announcement.user!.avatar}'),
-                                            fit: BoxFit.cover)
-                                        : null,
-                                    borderRadius: BorderRadius.circular(15),
-                                    color: Colors.blueGrey),
+                              SizedBox(width: 10),
+                              CircleAvatar(
+                                backgroundImage: NetworkImage(
+                                    '${announcement.user!.avatar}'),
                               ),
-                              SizedBox(
-                                width: 10,
-                              ),
+                              SizedBox(width: 10),
                               Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Text(
-                                    '${announcement.user!.name}',
-                                    style: TextStyle(
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 16),
-                                  ),
-                                  Text(
-                                    '${DateFormat.yMMMMd().format(DateTime.parse(announcement.created!))}',
-                                    style: TextStyle(
-                                        fontSize: 12, color: Colors.grey),
-                                  ),
-                                ],
-                              ),
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '${announcement.user!.name}',
+                                      style: TextStyle(),
+                                    ),
+                                    Text(
+                                      '${DateFormat.yMMMMd().format(DateTime.parse(announcement.created!))}',
+                                      style: TextStyle(color: Colors.grey),
+                                    ),
+                                  ]),
                             ],
                           ),
-                        ],
+                        ),
+                      ],
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width - 40,
+                      margin: EdgeInsets.only(left: 15, top: 15, bottom: 10),
+                      child: Text('${announcement.title ?? 'No Title'}'),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width - 40,
+                      margin: EdgeInsets.only(left: 15, top: 15, bottom: 10),
+                      child: Text('${announcement.body ?? 'No Title'}'),
+                    ),
+                    InkWell(
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => CommentScreen(
+                                  announcementID: announcement.id,
+                                )));
+                      },
+                      child: Container(
+                        alignment: Alignment.centerLeft,
+                        height: 40,
+                        width: MediaQuery.of(context).size.width - 30,
+                        margin: EdgeInsets.only(left: 15),
+                        child: Text(
+                          "Add class comment",
+                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        ),
                       ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Text('${announcement.title ?? 'No Title'}'),
-                      Text('${announcement.body}')
-                    ],
-                  ),
-                ),
-              ),
-            );
+                    )
+                  ],
+                ));
           }),
     );
   }
@@ -302,30 +348,63 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
           itemCount: _assessmentsList.length,
           itemBuilder: (BuildContext context, int index) {
             Assessment assessment = _assessmentsList[index];
-            return Card(
-              child: Container(
-                padding: EdgeInsets.all(20),
-                width: MediaQuery.of(context).size.width,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('${assessment.title ?? 'No Title'}'),
-                    Text(
-                      'Duration: ${assessment.duration.toString()}',
-                    ),
-                    Text(
-                      'Items: ${assessment.items.toString()}',
-                    ),
-                    Text(
-                      'Start Date: ${assessment.startDate}',
-                    ),
-                    Text(
-                      'End Date: ${assessment.endDate}',
-                    ),
-                    Text(
-                      'Status: ${assessment.status}',
-                    ),
-                  ],
+            return InkWell(
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Container(
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.grey),
+                        child: Icon(
+                          Icons.assignment,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                '${assessment.title ?? 'No Title'} ',
+                                style: TextStyle(
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                              Text(
+                                '${assessment.status}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          ),
+                          Text(
+                            'Start: ${assessment.startDate}',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                          Text(
+                            'Due: ${assessment.endDate}',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             );
@@ -342,18 +421,46 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
           itemCount: _materialsList.length,
           itemBuilder: (BuildContext context, int index) {
             Materials material = _materialsList[index];
-            return Card(
-              child: InkWell(
-                onTap: () {
-                  _downloadFile(material.url!);
-                },
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(material.title!),
-                      Text(material.description!),
+            return InkWell(
+              onTap: () {
+                _downloadFile(material.url!);
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Container(
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.grey),
+                        child: Icon(
+                          Icons.assignment,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${material.title ?? 'No Title'} ',
+                            style: TextStyle(
+                              letterSpacing: 1,
+                            ),
+                          ),
+                          Text(
+                            '${material.description ?? 'No Description'}',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),
@@ -372,25 +479,52 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
           itemCount: _assignmentsList.length,
           itemBuilder: (BuildContext context, int index) {
             Assignment assignment = _assignmentsList[index];
-            return Card(
-              child: InkWell(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) =>
-                          AssignmentDetailScreen(assignment: assignment),
-                    ),
-                  );
-                },
-                child: Padding(
-                  padding: EdgeInsets.all(16.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(assignment.title!),
-                      Text(
-                          'Due Date: ${DateFormat.yMMMMd().format(DateTime.parse(assignment.due!))}'),
+            return InkWell(
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) =>
+                        AssignmentDetailScreen(assignment: assignment),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(15.0),
+                child: Container(
+                  child: Row(
+                    children: [
+                      Container(
+                        height: 50,
+                        width: 50,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(30),
+                            color: Colors.grey),
+                        child: Icon(
+                          Icons.assignment,
+                          color: Colors.white,
+                          size: 30,
+                        ),
+                      ),
+                      SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${assignment.title ?? 'No Title'} ',
+                            style: TextStyle(
+                              letterSpacing: 1,
+                            ),
+                          ),
+                          Text(
+                            'Due: ${DateFormat.yMMMMd().format(DateTime.parse(assignment.due!))}',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
+                          ),
+                        ],
+                      )
                     ],
                   ),
                 ),

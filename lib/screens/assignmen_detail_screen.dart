@@ -98,28 +98,30 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                 widget.assignment.title?.isEmpty ?? true
                     ? 'No Title'
                     : widget.assignment.title!,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
               ),
-              SizedBox(height: 8),
               Text(
-                'Due: ${DateFormat.yMMMMd().format(DateTime.parse(widget.assignment.due!))}',
+                'Due ${DateFormat.yMMMMd().format(DateTime.parse(widget.assignment.due!))}',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               Text(
-                'Points: ${widget.assignment.points.toString()}',
+                '${widget.assignment.points.toString()} Points',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               Text(
-                'Allowed Resubmission: ${widget.assignment.submission.toString()}',
+                'Resubmission Count: ${widget.assignment.submission.toString()}',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
+              SizedBox(height: 18),
+              Divider(),
+              SizedBox(height: 18),
               Text(
-                'Instruction: ${widget.assignment.instructions!}',
+                '${widget.assignment.instructions!}',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
               SizedBox(height: 18),
               Text(
-                'Attachments:',
+                'Attachments',
                 style: TextStyle(
                     fontSize: 12,
                     color: Colors.grey,

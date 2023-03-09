@@ -1,7 +1,10 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
 import 'package:step/models/response_model.dart';
 import 'package:step/models/room_model.dart';
+import 'package:step/screens/join_screen.dart';
 import 'package:step/screens/login_screen.dart';
 import 'package:step/screens/room_detail_screen.dart';
 import 'package:step/services/room_service.dart';
@@ -13,6 +16,20 @@ class RoomScreen extends StatefulWidget {
 }
 
 class _RoomScreenState extends State<RoomScreen> {
+  final List<String> roomImages = [
+    'images/b1.jpg',
+    'images/b2.jpg',
+    'images/b3.jpg',
+    'images/b4.jpg',
+    'images/b5.jpg',
+    'images/b6.jpg',
+    'images/b7.jpg',
+    'images/b8.jpg',
+    'images/b9.jpg',
+    'images/b10.jpg',
+  ];
+  Random random = new Random();
+
   List<dynamic> _roomList = [];
   int userId = 0;
   bool _loading = true;
@@ -55,32 +72,65 @@ class _RoomScreenState extends State<RoomScreen> {
               return retrieveRooms();
             },
             child: ListView.builder(
-                itemCount: _roomList.length,
-                itemBuilder: (BuildContext context, int index) {
-                  Room room = _roomList[index];
-                  return Card(
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => RoomDetailScreen(
-                                  room: room,
-                                )));
-                      },
-                      child: Container(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 10, vertical: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text('${room.user!.name}'),
-                            Text('${room.name}'),
-                            Text('${room.section}'),
-                          ],
+              itemCount: _roomList.length,
+              itemBuilder: (BuildContext context, int index) {
+                Room room = _roomList[index];
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                        builder: (context) => RoomDetailScreen(
+                              room: room,
+                            )));
+                  },
+                  child: Stack(
+                    children: [
+                      Container(
+                        height: 140,
+                        margin: EdgeInsets.all(15),
+                        child: Image(
+                          image: AssetImage(
+                              roomImages[random.nextInt(roomImages.length)]),
+                          fit: BoxFit.cover,
                         ),
                       ),
-                    ),
-                  );
-                }),
+                      Container(
+                        margin: EdgeInsets.only(top: 30, left: 30),
+                        width: 220,
+                        child: Text(
+                          '${room.name}',
+                          style: TextStyle(
+                            fontSize: 20,
+                            color: Colors.white,
+                            letterSpacing: 1,
+                          ),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 58, left: 30),
+                        child: Text(
+                          '${room.section}',
+                          style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.white,
+                              letterSpacing: 1),
+                        ),
+                      ),
+                      Container(
+                        margin: EdgeInsets.only(top: 80, left: 30),
+                        child: Text(
+                          '${room.user!.name}',
+                          style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.white54,
+                              letterSpacing: 1),
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            ),
           );
   }
 }
