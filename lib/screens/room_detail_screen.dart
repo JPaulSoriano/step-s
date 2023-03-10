@@ -535,19 +535,26 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
   }
 
   Future<void> _downloadFile(String url) async {
-    // Check if permission is granted
     final status = await Permission.storage.status;
     if (!status.isGranted) {
-      // Request permission
       await Permission.storage.request();
     }
 
-    // Download file
     final response = await http.get(Uri.parse(url));
     final fileName = url.split('/').last;
+    final fileExtension = fileName.split('.').last;
+    final fileNameWithoutExtension =
+        fileName.substring(0, fileName.length - fileExtension.length - 1);
     final downloadsDir = Directory('/storage/emulated/0/Download');
     await downloadsDir.create(recursive: true);
-    final filePath = '${downloadsDir.path}/$fileName';
+    var filePath = '${downloadsDir.path}/$fileName';
+    var fileNumber = 1;
+    while (await File(filePath).exists()) {
+      // if file with same name already exists, rename it by adding a number to the filename
+      filePath =
+          '${downloadsDir.path}/$fileNameWithoutExtension($fileNumber).$fileExtension';
+      fileNumber++;
+    }
     final file = File(filePath);
     await file.writeAsBytes(response.bodyBytes);
 

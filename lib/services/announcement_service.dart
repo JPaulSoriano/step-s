@@ -35,6 +35,7 @@ Future<ApiResponse> getAnnouncements(int roomId) async {
         break;
     }
   } catch (e) {
+    print(e);
     apiResponse.error = serverError;
   }
   return apiResponse;
