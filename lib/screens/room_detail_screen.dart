@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
@@ -19,6 +20,7 @@ import 'package:step/services/material_service.dart';
 import 'package:step/services/user_service.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
+import 'dart:async';
 
 class RoomDetailScreen extends StatefulWidget {
   final Room room;
@@ -201,6 +203,14 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
               Container(
                 margin: EdgeInsets.only(top: 80, left: 30),
                 child: Text(
+                  '${widget.room.key}',
+                  style: TextStyle(
+                      fontSize: 14, color: Colors.white, letterSpacing: 1),
+                ),
+              ),
+              Container(
+                margin: EdgeInsets.only(top: 102, left: 30),
+                child: Text(
                   '${widget.room.user!.name}',
                   style: TextStyle(
                       fontSize: 12, color: Colors.white54, letterSpacing: 1),
@@ -308,12 +318,15 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                     Container(
                       width: MediaQuery.of(context).size.width - 40,
                       margin: EdgeInsets.only(left: 15, top: 15, bottom: 10),
-                      child: Text('${announcement.title ?? 'No Title'}'),
+                      child: Text(
+                        '${announcement.title ?? 'No Title'}',
+                        style: TextStyle(fontSize: 15, color: Colors.grey),
+                      ),
                     ),
                     Container(
                       width: MediaQuery.of(context).size.width - 40,
-                      margin: EdgeInsets.only(left: 15, top: 15, bottom: 10),
-                      child: Text('${announcement.body ?? 'No Title'}'),
+                      margin: EdgeInsets.only(left: 12, top: 15, bottom: 10),
+                      child: Html(data: '${announcement.body ?? 'No Body'}'),
                     ),
                     InkWell(
                       onTap: () {
