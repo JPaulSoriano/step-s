@@ -54,34 +54,6 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
   bool _loading = true;
   int userId = 0;
   int _currentIndex = 0;
-  Timer? _timer;
-
-  @override
-  void dispose() {
-    super.dispose();
-    // Cancel the timer when the screen is disposed
-    _timer?.cancel();
-  }
-
-// Start the timer function
-  void _startTimer() {
-    // Call the function to get data initially
-    _getData();
-    // Set up a 30 second timer
-    _timer = Timer.periodic(Duration(seconds: 30), (timer) {
-      _getData();
-    });
-  }
-
-// Function to get data from the server
-  void _getData() {
-    // Call all the functions to get data
-    _getAnnouncements();
-    _getAssessments();
-    _getMaterials();
-    _getAssignments();
-    _getPeople();
-  }
 
   // Get Announcements
   Future<void> _getAnnouncements() async {
@@ -201,7 +173,6 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     _getAssignments();
     _getPeople();
     super.initState();
-    _startTimer();
   }
 
   @override
