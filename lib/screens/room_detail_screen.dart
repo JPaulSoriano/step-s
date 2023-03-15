@@ -1,6 +1,5 @@
 import 'dart:io';
 import 'dart:math';
-import 'package:flutter_html/flutter_html.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
@@ -8,6 +7,7 @@ import 'package:step/models/announcement_model.dart';
 import 'package:step/models/assessment_model.dart';
 import 'package:step/models/assignment_model.dart';
 import 'package:step/models/material_model.dart';
+import 'package:step/models/people_model.dart';
 import 'package:step/models/response_model.dart';
 import 'package:step/models/room_model.dart';
 import 'package:step/screens/assignmen_detail_screen.dart';
@@ -17,6 +17,7 @@ import 'package:step/services/announcement_service.dart';
 import 'package:step/services/assessment_service.dart';
 import 'package:step/services/assignment_service.dart';
 import 'package:step/services/material_service.dart';
+import 'package:step/services/people_servide.dart';
 import 'package:step/services/user_service.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -49,9 +50,38 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
   List<dynamic> _assessmentsList = [];
   List<dynamic> _materialsList = [];
   List<dynamic> _assignmentsList = [];
+  List<dynamic> _peopleList = [];
   bool _loading = true;
   int userId = 0;
   int _currentIndex = 0;
+  Timer? _timer;
+
+  @override
+  void dispose() {
+    super.dispose();
+    // Cancel the timer when the screen is disposed
+    _timer?.cancel();
+  }
+
+// Start the timer function
+  void _startTimer() {
+    // Call the function to get data initially
+    _getData();
+    // Set up a 30 second timer
+    _timer = Timer.periodic(Duration(seconds: 30), (timer) {
+      _getData();
+    });
+  }
+
+// Function to get data from the server
+  void _getData() {
+    // Call all the functions to get data
+    _getAnnouncements();
+    _getAssessments();
+    _getMaterials();
+    _getAssignments();
+    _getPeople();
+  }
 
   // Get Announcements
   Future<void> _getAnnouncements() async {
@@ -141,13 +171,37 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     }
   }
 
+  // Get People
+  Future<void> _getPeople() async {
+    userId = await getUserId();
+    ApiResponse response = await getPeople(widget.room.id ?? 0);
+
+    if (response.error == null) {
+      setState(() {
+        _peopleList = response.data as List<dynamic>;
+        _loading = _loading ? !_loading : _loading;
+      });
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Login()),
+                (route) => false)
+          });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
+
   @override
   void initState() {
     _getAnnouncements();
     _getAssessments();
     _getMaterials();
     _getAssignments();
+    _getPeople();
     super.initState();
+    _startTimer();
   }
 
   @override
@@ -246,6 +300,10 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
             icon: Icon(Icons.assignment),
             label: 'Assignments',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'People',
+          ),
         ],
       ),
     );
@@ -261,6 +319,8 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
         return _buildMaterials();
       case 3:
         return _buildAssignments();
+      case 4:
+        return _buildPeople();
       default:
         return Container();
     }
@@ -326,7 +386,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                     Container(
                       width: MediaQuery.of(context).size.width - 40,
                       margin: EdgeInsets.only(left: 12, top: 15, bottom: 10),
-                      child: Html(data: '${announcement.body ?? 'No Body'}'),
+                      child: Text('${announcement.body ?? 'No Body'}'),
                     ),
                     InkWell(
                       onTap: () {
@@ -544,6 +604,116 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
               ),
             );
           }),
+    );
+  }
+
+  Widget _buildPeople() {
+    return RefreshIndicator(
+      onRefresh: () {
+        return _getPeople();
+      },
+      child: ListView.separated(
+        itemCount: _peopleList.length,
+        separatorBuilder: (BuildContext context, int index) => Divider(),
+        itemBuilder: (BuildContext context, int index) {
+          People people = _peopleList[index];
+          if (people.staff != null) {
+            return _buildStaffRow(people.staff!);
+          } else if (people.student != null) {
+            return _buildStudentRow(people.student!);
+          } else {
+            return Container(); // return an empty container if there's no staff or student
+          }
+        },
+      ),
+    );
+  }
+
+  Widget _buildStaffRow(Staff staff) {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Container(
+        child: Row(
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.grey,
+              ),
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${staff.name}',
+                  style: TextStyle(
+                    letterSpacing: 1,
+                  ),
+                ),
+                Text(
+                  'Teacher',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildStudentRow(Student student) {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Container(
+        child: Row(
+          children: [
+            Container(
+              height: 50,
+              width: 50,
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(30),
+                color: Colors.grey,
+              ),
+              child: Icon(
+                Icons.person,
+                color: Colors.white,
+                size: 30,
+              ),
+            ),
+            SizedBox(width: 10),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  '${student.name}',
+                  style: TextStyle(
+                    letterSpacing: 1,
+                  ),
+                ),
+                Text(
+                  'Student',
+                  style: TextStyle(
+                    color: Colors.grey,
+                    fontSize: 12,
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
     );
   }
 

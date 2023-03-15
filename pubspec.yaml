@@ -40,7 +40,7 @@ dependencies:
   intl: ^0.18.0
   permission_handler: ^10.2.0
   file_picker: ^5.2.5
-  flutter_html: ^2.2.1
+
 
 dev_dependencies:
   flutter_test:
