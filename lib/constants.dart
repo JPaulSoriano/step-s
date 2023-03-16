@@ -9,6 +9,7 @@ const roomsURL = baseURL + '/rooms';
 const CommentUrl = baseURL + '/announcements';
 const SubmitAssignmentURL = baseURL + '/assignments';
 const joinRoomURL = baseURL + '/join';
+const NotificationURL = baseURL + '/notifications';
 
 // ----- Errors -----
 const serverError = 'Server error';

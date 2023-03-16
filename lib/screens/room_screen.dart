@@ -1,10 +1,8 @@
 import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
 import 'package:step/models/response_model.dart';
 import 'package:step/models/room_model.dart';
-import 'package:step/screens/join_screen.dart';
 import 'package:step/screens/login_screen.dart';
 import 'package:step/screens/room_detail_screen.dart';
 import 'package:step/services/room_service.dart';
