@@ -1,5 +1,3 @@
-import 'dart:convert';
-import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
 import 'package:step/models/response_model.dart';
@@ -9,7 +7,6 @@ import 'package:step/screens/login_screen.dart';
 import 'package:step/screens/notification_screen.dart';
 import 'package:step/screens/profile_screen.dart';
 import 'package:step/screens/room_screen.dart';
-import 'package:step/services/notification_service.dart';
 import 'package:step/services/user_service.dart';
 
 class Home extends StatefulWidget {
@@ -20,7 +17,6 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   int currentIndex = 0;
   User? user;
-  Map<String, dynamic>? _notificationsData;
 
   void getUser() async {
     ApiResponse response = await getUserDetail();
@@ -43,20 +39,11 @@ class _HomeState extends State<Home> {
   @override
   void initState() {
     super.initState();
-    _loadNotifications();
     getUser();
-  }
-
-  Future<void> _loadNotifications() async {
-    final data = await getNotifications();
-    setState(() {
-      _notificationsData = data;
-    });
   }
 
   @override
   Widget build(BuildContext context) {
-    final notificationsCount = _notificationsData?['notifications_count'];
     return Scaffold(
       appBar: AppBar(
         elevation: 0,
@@ -72,56 +59,14 @@ class _HomeState extends State<Home> {
                   ));
             },
           ),
-          Stack(
-            children: [
-              IconButton(
-                icon: Icon(Icons.notifications),
-                onPressed: () async {
-                  final response = await http
-                      .get(Uri.parse('https://your-api-endpoint.com/readAll'));
-                  if (response.statusCode == 200) {
-                    final responseData = json.decode(response.body);
-                    final message = responseData['message'];
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text(message),
-                    ));
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                      content: Text('Error marking notifications as read'),
-                    ));
-                  }
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => NotificationsScreen()),
-                  );
-                },
-              ),
-              if (notificationsCount != null && notificationsCount > 0)
-                Positioned(
-                  top: 8,
-                  right: 8,
-                  child: Container(
-                    padding: EdgeInsets.all(2),
-                    decoration: BoxDecoration(
-                      color: Colors.red,
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                    constraints: BoxConstraints(
-                      minWidth: 16,
-                      minHeight: 16,
-                    ),
-                    child: Text(
-                      notificationsCount.toString(),
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 10,
-                      ),
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                ),
-            ],
+          IconButton(
+            icon: Icon(Icons.notifications),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationsScreen()),
+              );
+            },
           )
         ],
       ),

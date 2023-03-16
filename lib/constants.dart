@@ -10,6 +10,7 @@ const CommentUrl = baseURL + '/announcements';
 const SubmitAssignmentURL = baseURL + '/assignments';
 const joinRoomURL = baseURL + '/join';
 const NotificationURL = baseURL + '/notifications';
+const ReadURL = baseURL + '/read';
 
 // ----- Errors -----
 const serverError = 'Server error';
