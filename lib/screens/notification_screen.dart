@@ -8,7 +8,7 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  Map<String, dynamic>? _notificationsData;
+  List<dynamic> notifications = [];
 
   @override
   void initState() {
@@ -19,18 +19,15 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   Future<void> _loadNotifications() async {
     final data = await getNotifications();
     setState(() {
-      _notificationsData = data;
+      notifications = data['notifications'];
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    if (_notificationsData == null) {
+    if (notifications == null) {
       return Center(child: CircularProgressIndicator());
     }
-
-    final notificationsCount = _notificationsData?['notifications_count'];
-    final notifications = _notificationsData?['notifications'];
 
     return WillPopScope(
       onWillPop: () async {
