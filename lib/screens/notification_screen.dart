@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
 import 'package:step/services/notification_service.dart';
 
@@ -9,17 +10,46 @@ class NotificationsScreen extends StatefulWidget {
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
   List<dynamic> notifications = [];
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
 
   @override
   void initState() {
     super.initState();
     _loadNotifications();
+
+    // Initialize the local notifications plugin
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
   Future<void> _loadNotifications() async {
     final data = await getNotifications();
+    final List<dynamic> newNotifications = data['notifications'];
+
+    // Check if there are any new notifications
+    if (newNotifications.isNotEmpty &&
+        newNotifications.length > notifications.length) {
+      // Show a local notification for each new notification
+      for (int i = notifications.length; i < newNotifications.length; i++) {
+        final notification = newNotifications[i];
+        await flutterLocalNotificationsPlugin.show(
+            0,
+            notification['data']['type'],
+            notification['data']['title'],
+            const NotificationDetails(
+                android: AndroidNotificationDetails(
+                    'channel_id', 'channel_name', 'channel_description')),
+            payload: 'item x');
+      }
+    }
+
+    // Update the notifications list
     setState(() {
-      notifications = data['notifications'];
+      notifications = newNotifications;
     });
   }
 
