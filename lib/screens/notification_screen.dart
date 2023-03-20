@@ -141,8 +141,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   }
 }
 
-
-
 // import 'package:flutter/material.dart';
 // import 'package:intl/intl.dart';
 // import 'package:step/services/notification_service.dart';
