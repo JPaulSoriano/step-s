@@ -41,7 +41,6 @@ dependencies:
   permission_handler: ^10.2.0
   file_picker: ^5.2.5
   flutter_local_notifications: ^8.2.0
-  flutter_background: ^1.2.0
 
 dev_dependencies:
   flutter_test:

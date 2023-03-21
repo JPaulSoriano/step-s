@@ -30,21 +30,17 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     final data = await getNotifications();
     final List<dynamic> newNotifications = data['notifications'];
 
-    // Check if there are any new notifications
-    if (newNotifications.isNotEmpty &&
-        newNotifications.length > notifications.length) {
-      // Show a local notification for each new notification
-      for (int i = notifications.length; i < newNotifications.length; i++) {
-        final notification = newNotifications[i];
-        await flutterLocalNotificationsPlugin.show(
-            0,
-            notification['data']['type'],
-            notification['data']['title'],
-            const NotificationDetails(
-                android: AndroidNotificationDetails(
-                    'channel_id', 'channel_name', 'channel_description')),
-            payload: 'item x');
-      }
+    // Show a local notification for each notification
+    for (int i = 0; i < newNotifications.length; i++) {
+      final notification = newNotifications[i];
+      await flutterLocalNotificationsPlugin.show(
+          i,
+          notification['data']['type'],
+          notification['data']['title'],
+          const NotificationDetails(
+              android: AndroidNotificationDetails(
+                  'channel_id', 'channel_name', 'channel_description')),
+          payload: 'item $i');
     }
 
     // Update the notifications list
