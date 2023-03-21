@@ -142,6 +142,10 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                     color: Colors.grey,
                     fontWeight: FontWeight.bold),
               ),
+              Text(
+                'Score: ${widget.assignment.score.toString()}',
+                style: TextStyle(fontSize: 12, color: Colors.grey),
+              ),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(

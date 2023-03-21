@@ -7,6 +7,7 @@ class Assignment {
   String? instructions;
   String? url;
   String? file;
+  int? score;
 
   Assignment({
     this.id,
@@ -17,6 +18,7 @@ class Assignment {
     this.instructions,
     this.url,
     this.file,
+    this.score,
   });
 
   factory Assignment.fromJson(Map<String, dynamic> json) {
@@ -29,6 +31,7 @@ class Assignment {
       instructions: json['instructions'],
       url: json['url'],
       file: json['file'],
+      score: json['students'][0]['student']['score'],
     );
   }
 }

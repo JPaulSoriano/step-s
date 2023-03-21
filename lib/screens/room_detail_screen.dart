@@ -10,7 +10,7 @@ import 'package:step/models/material_model.dart';
 import 'package:step/models/people_model.dart';
 import 'package:step/models/response_model.dart';
 import 'package:step/models/room_model.dart';
-import 'package:step/screens/assignmen_detail_screen.dart';
+import 'package:step/screens/assignment_detail_screen.dart';
 import 'package:step/screens/comment_screen.dart';
 import 'package:step/screens/login_screen.dart';
 import 'package:step/services/announcement_service.dart';
