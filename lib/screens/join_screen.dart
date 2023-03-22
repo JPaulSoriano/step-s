@@ -13,7 +13,7 @@ class JoinRoomForm extends StatefulWidget {
 
 class _JoinRoomFormState extends State<JoinRoomForm> {
   final _formKey = GlobalKey<FormState>();
-  String _roomKey = '';
+  String roomKey = '';
   ApiResponse _apiResponse = ApiResponse();
 
   Future<void> _joinRoom() async {
@@ -21,20 +21,20 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
       _formKey.currentState!.save();
 
       // Call joinRoom function with the room key to join the room
-      _apiResponse = await joinRoom(_roomKey);
+      ApiResponse response = await joinRoom(roomKey);
 
-      if (_apiResponse.error != null) {
+      if (response.error != null) {
         // Display error message if there is an error in joining the room
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${_apiResponse.error}'),
+            content: Text('${response.error}'),
           ),
         );
       } else {
         // Display success message if the room is joined successfully
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text('${_apiResponse.data}'),
+            content: Text('${response.data}'),
           ),
         );
         Navigator.pop(context); // Pop the dialog after joining the room
@@ -65,7 +65,7 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
                 return null;
               },
               onSaved: (value) {
-                _roomKey = value!;
+                roomKey = value!;
               },
             ),
             ElevatedButton(
