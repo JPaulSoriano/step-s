@@ -14,7 +14,6 @@ class JoinRoomForm extends StatefulWidget {
 class _JoinRoomFormState extends State<JoinRoomForm> {
   final _formKey = GlobalKey<FormState>();
   String roomKey = '';
-  ApiResponse _apiResponse = ApiResponse();
 
   Future<void> _joinRoom() async {
     if (_formKey.currentState!.validate()) {
