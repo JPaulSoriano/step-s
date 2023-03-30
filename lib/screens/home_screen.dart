@@ -53,7 +53,7 @@ class _HomeState extends State<Home> {
     super.initState();
     getUser();
     _loadNotificationsCount();
-    timer = Timer.periodic(Duration(minutes: 1), (_) {
+    timer = Timer.periodic(Duration(minutes: 5), (_) {
       _loadNotificationsCount();
     });
   }

@@ -98,8 +98,9 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                 widget.assignment.title?.isEmpty ?? true
                     ? 'No Title'
                     : widget.assignment.title!,
-                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w500),
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.w400),
               ),
+              SizedBox(height: 8),
               Text(
                 'Due ${DateFormat.yMMMMd().format(DateTime.parse(widget.assignment.due!))}',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
@@ -112,20 +113,17 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                 'Resubmission Count: ${widget.assignment.submission.toString()}',
                 style: TextStyle(fontSize: 12, color: Colors.grey),
               ),
+              SizedBox(height: 12),
+              Text(
+                '${widget.assignment.instructions!}',
+                style: TextStyle(fontSize: 10, color: Colors.grey),
+              ),
               SizedBox(height: 18),
               Divider(),
               SizedBox(height: 18),
               Text(
-                '${widget.assignment.instructions!}',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
-              ),
-              SizedBox(height: 18),
-              Text(
                 'Attachments',
-                style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold),
+                style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
               ),
               TextButton(
                 onPressed: () {
@@ -135,16 +133,25 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
               ),
               Divider(),
               SizedBox(height: 18),
-              Text(
-                'Your Work',
-                style: TextStyle(
-                    fontSize: 12,
-                    color: Colors.grey,
-                    fontWeight: FontWeight.bold),
-              ),
-              Text(
-                'Score: ${widget.assignment.score.toString()}',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Your Work',
+                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
+                  ),
+                  Text(
+                    widget.assignment.score != null
+                        ? '${widget.assignment.score} / ${widget.assignment.points}'
+                        : 'No score recorded yet',
+                    textAlign: TextAlign.right,
+                    style: TextStyle(
+                      fontSize: 10,
+                      color: Colors.grey,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
                 width: double.infinity,

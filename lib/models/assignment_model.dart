@@ -22,6 +22,8 @@ class Assignment {
   });
 
   factory Assignment.fromJson(Map<String, dynamic> json) {
+    var students = json['students'] as List<dynamic>;
+    var score = students.isNotEmpty ? students[0]['student']['score'] : 0;
     return Assignment(
       id: json['id'],
       title: json['title'],
@@ -31,7 +33,7 @@ class Assignment {
       instructions: json['instructions'],
       url: json['url'],
       file: json['file'],
-      score: json['students'][0]['student']['score'],
+      score: score,
     );
   }
 }
