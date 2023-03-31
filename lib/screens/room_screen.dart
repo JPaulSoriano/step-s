@@ -1,6 +1,11 @@
+import 'dart:convert';
 import 'dart:math';
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:step/constants.dart';
+import 'package:step/main.dart';
 import 'package:step/models/response_model.dart';
 import 'package:step/models/room_model.dart';
 import 'package:step/screens/login_screen.dart';
@@ -9,6 +14,7 @@ import 'package:step/services/room_service.dart';
 import 'package:step/services/user_service.dart';
 
 class RoomScreen extends StatefulWidget {
+  late final String? message;
   @override
   _RoomScreenState createState() => _RoomScreenState();
 }
@@ -59,7 +65,62 @@ class _RoomScreenState extends State<RoomScreen> {
   void initState() {
     retrieveRooms();
     super.initState();
+    // setupInteractedMessage();
+
+    FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((RemoteMessage? message) async {
+      RemoteNotification? notification = message?.notification!;
+
+      print(notification != null ? notification.title : '');
+    });
+
+    FirebaseMessaging.onMessage.listen((message) async {
+      RemoteNotification? notification = message.notification;
+      AndroidNotification? android = message.notification?.android;
+
+      if (notification != null && android != null && !kIsWeb) {
+        String action = jsonEncode(message.data);
+
+        flutterLocalNotificationsPlugin!.show(
+            notification.hashCode,
+            notification.title,
+            notification.body,
+            NotificationDetails(
+              android: AndroidNotificationDetails(
+                channel!.id,
+                channel!.name,
+                priority: Priority.high,
+                importance: Importance.max,
+                setAsGroupSummary: true,
+                styleInformation: DefaultStyleInformation(true, true),
+                largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
+                channelShowBadge: true,
+                autoCancel: true,
+                icon: '@mipmap/ic_launcher',
+              ),
+            ),
+            payload: action);
+      }
+      print('New Notification');
+    });
+
+    FirebaseMessaging.onMessageOpenedApp
+        .listen((message) => _handleMessage(message.data));
   }
+
+  Future<dynamic> onSelectNotification(payload) async {
+    Map<String, dynamic> action = jsonDecode(payload);
+    _handleMessage(action);
+  }
+
+  Future<void> setupInteractedMessage() async {
+    await FirebaseMessaging.instance
+        .getInitialMessage()
+        .then((value) => _handleMessage(value != null ? value.data : Map()));
+  }
+
+  void _handleMessage(Map<String, dynamic> data) {}
 
   @override
   Widget build(BuildContext context) {

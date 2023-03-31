@@ -1,3 +1,4 @@
+import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
 import 'package:step/models/response_model.dart';
@@ -36,6 +37,7 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
             content: Text('${response.data}'),
           ),
         );
+        FirebaseMessaging.instance.subscribeToTopic(roomKey);
         Navigator.pop(context); // Pop the dialog after joining the room
       }
     }
