@@ -47,39 +47,63 @@ class _LoginState extends State<Login> {
       ),
       body: Form(
         key: formkey,
-        child: ListView(
-          padding: EdgeInsets.all(32),
+        child: Stack(
           children: [
-            TextFormField(
-                keyboardType: TextInputType.emailAddress,
-                controller: txtEmail,
-                validator: (val) =>
-                    val!.isEmpty ? 'Invalid email address' : null,
-                decoration: kInputDecoration('Email')),
-            SizedBox(
-              height: 10,
+            ListView(
+              padding: EdgeInsets.all(32),
+              children: [
+                Center(
+                  child: Text(
+                    'Sign In',
+                    style: TextStyle(
+                      fontSize: 25,
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    controller: txtEmail,
+                    validator: (val) =>
+                        val!.isEmpty ? 'Invalid email address' : null,
+                    decoration: kInputDecoration('Email')),
+                SizedBox(
+                  height: 10,
+                ),
+                TextFormField(
+                    controller: txtPassword,
+                    obscureText: true,
+                    validator: (val) =>
+                        val!.length < 6 ? 'Required at least 6 chars' : null,
+                    decoration: kInputDecoration('Password')),
+                SizedBox(
+                  height: 10,
+                ),
+                loading
+                    ? Center(
+                        child: CircularProgressIndicator(),
+                      )
+                    : kTextButton('Login', () {
+                        if (formkey.currentState!.validate()) {
+                          setState(() {
+                            loading = true;
+                            _loginUser();
+                          });
+                        }
+                      }),
+              ],
             ),
-            TextFormField(
-                controller: txtPassword,
-                obscureText: true,
-                validator: (val) =>
-                    val!.length < 6 ? 'Required at least 6 chars' : null,
-                decoration: kInputDecoration('Password')),
-            SizedBox(
-              height: 10,
+            Positioned(
+              bottom: 20,
+              left: 0,
+              right: 0,
+              child: Image.asset(
+                'images/ico.png',
+                height: 30,
+              ),
             ),
-            loading
-                ? Center(
-                    child: CircularProgressIndicator(),
-                  )
-                : kTextButton('Login', () {
-                    if (formkey.currentState!.validate()) {
-                      setState(() {
-                        loading = true;
-                        _loginUser();
-                      });
-                    }
-                  }),
           ],
         ),
       ),

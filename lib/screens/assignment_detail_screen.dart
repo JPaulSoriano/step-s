@@ -153,6 +153,25 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                   ),
                 ],
               ),
+              ListView.builder(
+                shrinkWrap: true,
+                physics: NeverScrollableScrollPhysics(),
+                itemCount: widget.assignment.studentAssignments?.length,
+                itemBuilder: (BuildContext context, int index) {
+                  var studentAssignment =
+                      widget.assignment.studentAssignments![index];
+                  return Card(
+                    child: ListTile(
+                      title: Text(
+                        studentAssignment.file!,
+                      ),
+                      subtitle: Text(
+                        '${DateFormat.yMMMMd().format(DateTime.parse(studentAssignment.created_at!))}',
+                      ),
+                    ),
+                  );
+                },
+              ),
               SizedBox(
                 width: double.infinity,
                 child: OutlinedButton(

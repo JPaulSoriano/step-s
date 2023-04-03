@@ -14,12 +14,14 @@ import 'package:step/services/room_service.dart';
 import 'package:step/services/user_service.dart';
 
 class RoomScreen extends StatefulWidget {
-  late final String? message;
   @override
   _RoomScreenState createState() => _RoomScreenState();
 }
 
 class _RoomScreenState extends State<RoomScreen> {
+  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
+      FlutterLocalNotificationsPlugin();
+  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final List<String> roomImages = [
     'images/b1.jpg',
     'images/b2.jpg',
@@ -65,62 +67,46 @@ class _RoomScreenState extends State<RoomScreen> {
   void initState() {
     retrieveRooms();
     super.initState();
-    // setupInteractedMessage();
+    _configureFirebaseListeners();
+    _initializeLocalNotifications();
+  }
 
-    FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((RemoteMessage? message) async {
-      RemoteNotification? notification = message?.notification!;
-
-      print(notification != null ? notification.title : '');
+  void _configureFirebaseListeners() {
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
+      print("onMessage data: ${message.data}");
+      _showLocalNotification(message);
     });
-
-    FirebaseMessaging.onMessage.listen((message) async {
-      RemoteNotification? notification = message.notification;
-      AndroidNotification? android = message.notification?.android;
-
-      if (notification != null && android != null && !kIsWeb) {
-        String action = jsonEncode(message.data);
-
-        flutterLocalNotificationsPlugin!.show(
-            notification.hashCode,
-            notification.title,
-            notification.body,
-            NotificationDetails(
-              android: AndroidNotificationDetails(
-                channel!.id,
-                channel!.name,
-                priority: Priority.high,
-                importance: Importance.max,
-                setAsGroupSummary: true,
-                styleInformation: DefaultStyleInformation(true, true),
-                largeIcon: DrawableResourceAndroidBitmap('@mipmap/ic_launcher'),
-                channelShowBadge: true,
-                autoCancel: true,
-                icon: '@mipmap/ic_launcher',
-              ),
-            ),
-            payload: action);
-      }
-      print('New Notification');
-    });
-
-    FirebaseMessaging.onMessageOpenedApp
-        .listen((message) => _handleMessage(message.data));
   }
 
-  Future<dynamic> onSelectNotification(payload) async {
-    Map<String, dynamic> action = jsonDecode(payload);
-    _handleMessage(action);
+  Future<void> _initializeLocalNotifications() async {
+    const AndroidInitializationSettings initializationSettingsAndroid =
+        AndroidInitializationSettings('@mipmap/ic_launcher');
+    final InitializationSettings initializationSettings =
+        InitializationSettings(android: initializationSettingsAndroid);
+    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
   }
 
-  Future<void> setupInteractedMessage() async {
-    await FirebaseMessaging.instance
-        .getInitialMessage()
-        .then((value) => _handleMessage(value != null ? value.data : Map()));
+  Future<void> _showLocalNotification(RemoteMessage message) async {
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+        AndroidNotificationDetails(
+      'channel_id',
+      'channel_name',
+      channelDescription: 'channel_description',
+      importance: Importance.high,
+      priority: Priority.high,
+      playSound: true,
+      styleInformation: DefaultStyleInformation(true, true),
+    );
+    const NotificationDetails platformChannelSpecifics =
+        NotificationDetails(android: androidPlatformChannelSpecifics);
+    await _flutterLocalNotificationsPlugin.show(
+      message.notification.hashCode,
+      message.notification!.title,
+      message.notification!.body,
+      platformChannelSpecifics,
+      payload: message.data['payload'],
+    );
   }
-
-  void _handleMessage(Map<String, dynamic> data) {}
 
   @override
   Widget build(BuildContext context) {

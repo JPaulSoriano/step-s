@@ -57,6 +57,10 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
         child: ListView(
           padding: EdgeInsets.all(32),
           children: [
+            Text('Ask your teacher for the class code, then enter it here.'),
+            SizedBox(
+              height: 20,
+            ),
             TextFormField(
               decoration: kInputDecoration('Room Key'),
               validator: (value) {

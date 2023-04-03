@@ -19,10 +19,30 @@ class _ProfileState extends State<Profile> {
             width: 110,
             height: 110,
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(60),
-                image: DecorationImage(
-                    image: NetworkImage('${widget.user!.avatar}'),
-                    fit: BoxFit.cover)),
+              borderRadius: BorderRadius.circular(60),
+              image: widget.user?.avatar != null
+                  ? DecorationImage(
+                      image: NetworkImage('${widget.user?.avatar}'),
+                      fit: BoxFit.cover,
+                    )
+                  : null,
+            ),
+            child: widget.user?.avatar == null
+                ? Stack(
+                    children: [
+                      Center(
+                        child: CircleAvatar(
+                          backgroundColor: Colors.white,
+                          radius: 50,
+                          child: Text(
+                            '${widget.user?.name?[1]}',
+                            style: TextStyle(fontSize: 40.0),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : null,
           ),
           SizedBox(height: 8),
           Text(

@@ -132,7 +132,7 @@ class _HomeState extends State<Home> {
                     user?.avatar != null ? NetworkImage(user!.avatar!) : null,
                 child: user?.avatar == null
                     ? Text(
-                        '${user?.name?[0]}',
+                        '${user?.name?[1]}',
                         style: TextStyle(fontSize: 40.0),
                       )
                     : null,
