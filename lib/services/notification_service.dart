@@ -1,6 +1,5 @@
 import 'package:http/http.dart' as http;
 import 'package:step/constants.dart';
-import 'package:step/models/response_model.dart';
 import 'dart:convert';
 import 'package:step/services/user_service.dart';
 

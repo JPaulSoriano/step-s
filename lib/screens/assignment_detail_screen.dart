@@ -103,20 +103,20 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
               SizedBox(height: 8),
               Text(
                 'Due ${DateFormat.yMMMMd().format(DateTime.parse(widget.assignment.due!))}',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(color: Colors.grey),
               ),
               Text(
                 '${widget.assignment.points.toString()} Points',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(color: Colors.grey),
               ),
               Text(
                 'Resubmission Count: ${widget.assignment.submission.toString()}',
-                style: TextStyle(fontSize: 12, color: Colors.grey),
+                style: TextStyle(color: Colors.grey),
               ),
               SizedBox(height: 12),
               Text(
                 '${widget.assignment.instructions!}',
-                style: TextStyle(fontSize: 10, color: Colors.grey),
+                style: TextStyle(color: Colors.grey),
               ),
               SizedBox(height: 18),
               Divider(),
@@ -127,9 +127,11 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  _downloadFile(widget.assignment.url!);
+                  if (widget.assignment.url != null) {
+                    _downloadFile(widget.assignment.url!);
+                  }
                 },
-                child: Text(widget.assignment.file!),
+                child: Text(widget.assignment.file ?? 'No File Attached'),
               ),
               Divider(),
               SizedBox(height: 18),

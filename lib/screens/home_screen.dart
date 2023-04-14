@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
 import 'package:step/models/response_model.dart';

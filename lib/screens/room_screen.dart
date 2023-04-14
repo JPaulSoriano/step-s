@@ -1,11 +1,8 @@
-import 'dart:convert';
 import 'dart:math';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:step/constants.dart';
-import 'package:step/main.dart';
 import 'package:step/models/response_model.dart';
 import 'package:step/models/room_model.dart';
 import 'package:step/screens/login_screen.dart';
