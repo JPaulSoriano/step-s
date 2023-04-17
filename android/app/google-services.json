@@ -7,9 +7,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:182534702643:android:de0168ece6beb848bec546",
+        "mobilesdk_app_id": "1:182534702643:android:74e3291d31eddfabbec546",
         "android_client_info": {
-          "package_name": "com.example.step"
+          "package_name": "com.arzatech.step"
         }
       },
       "oauth_client": [

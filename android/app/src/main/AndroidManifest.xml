@@ -1,5 +1,5 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.example.step">
+    package="com.arzatech.step">
    <application
         android:usesCleartextTraffic="true"
         android:label="step"

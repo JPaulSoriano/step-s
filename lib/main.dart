@@ -26,6 +26,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'STEP S',
+      debugShowCheckedModeBanner: false,
       home: Loading(),
     );
   }

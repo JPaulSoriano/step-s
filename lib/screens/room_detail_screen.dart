@@ -324,8 +324,17 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                             children: [
                               SizedBox(width: 10),
                               CircleAvatar(
-                                backgroundImage: NetworkImage(
-                                    '${announcement.user!.avatar}'),
+                                backgroundImage:
+                                    announcement.user?.avatar != null
+                                        ? NetworkImage(
+                                            '${announcement.user!.avatar}')
+                                        : null,
+                                child: announcement.user?.avatar == null
+                                    ? Text(
+                                        announcement.user?.name?[0] ?? '',
+                                        style: TextStyle(fontSize: 24),
+                                      )
+                                    : null,
                               ),
                               SizedBox(width: 10),
                               Column(
