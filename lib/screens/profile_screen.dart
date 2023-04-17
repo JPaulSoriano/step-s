@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:step/models/user_model.dart';
 
@@ -22,7 +23,8 @@ class _ProfileState extends State<Profile> {
               borderRadius: BorderRadius.circular(60),
               image: widget.user?.avatar != null
                   ? DecorationImage(
-                      image: NetworkImage('${widget.user?.avatar}'),
+                      image:
+                          CachedNetworkImageProvider('${widget.user?.avatar}'),
                       fit: BoxFit.cover,
                     )
                   : null,

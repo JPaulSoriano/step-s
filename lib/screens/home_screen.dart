@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
 import 'package:step/models/response_model.dart';
@@ -20,7 +21,6 @@ class _HomeState extends State<Home> {
   int currentIndex = 0;
   User? user;
   int notificationsCount = 0;
-  Timer? timer;
 
   void getUser() async {
     ApiResponse response = await getUserDetail();
@@ -52,14 +52,10 @@ class _HomeState extends State<Home> {
     super.initState();
     getUser();
     _loadNotificationsCount();
-    timer = Timer.periodic(Duration(minutes: 5), (_) {
-      _loadNotificationsCount();
-    });
   }
 
   @override
   void dispose() {
-    timer?.cancel();
     super.dispose();
   }
 
@@ -70,16 +66,6 @@ class _HomeState extends State<Home> {
         elevation: 0,
         title: Text('STEP S'),
         actions: [
-          IconButton(
-            icon: Icon(Icons.add),
-            onPressed: () {
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => JoinRoomForm(),
-                  ));
-            },
-          ),
           Stack(
             children: [
               IconButton(
@@ -127,8 +113,9 @@ class _HomeState extends State<Home> {
               accountEmail: Text('${user?.email}'),
               currentAccountPicture: CircleAvatar(
                 backgroundColor: Colors.white,
-                backgroundImage:
-                    user?.avatar != null ? NetworkImage(user!.avatar!) : null,
+                backgroundImage: user?.avatar != null
+                    ? CachedNetworkImageProvider(user!.avatar!)
+                    : null,
                 child: user?.avatar == null
                     ? Text(
                         '${user?.name?[1]}',
@@ -174,6 +161,14 @@ class _HomeState extends State<Home> {
         ),
       ),
       body: currentIndex == 0 ? RoomScreen() : Profile(user: user),
+      floatingActionButton: FloatingActionButton(
+        elevation: 0,
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute(builder: (context) => JoinRoomForm()));
+        },
+        child: Icon(Icons.add),
+      ),
     );
   }
 }

@@ -1,7 +1,7 @@
 // ----- STRINGS ------
 import 'package:flutter/material.dart';
 
-const baseURL = 'http://143.198.213.49/api';
+const baseURL = 'https://udd.steps.com.ph/api';
 const loginURL = baseURL + '/login';
 const logoutURL = baseURL + '/logout';
 const userURL = baseURL + '/user';

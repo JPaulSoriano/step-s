@@ -42,8 +42,8 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Login'),
-        centerTitle: true,
+        elevation: 0,
+        title: Text('STEP S LMS'),
       ),
       body: Form(
         key: formkey,
@@ -94,15 +94,6 @@ class _LoginState extends State<Login> {
                         }
                       }),
               ],
-            ),
-            Positioned(
-              bottom: 20,
-              left: 0,
-              right: 0,
-              child: Image.asset(
-                'images/ico.png',
-                height: 30,
-              ),
             ),
           ],
         ),

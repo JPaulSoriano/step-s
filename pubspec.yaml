@@ -44,7 +44,8 @@ dependencies:
   firebase_analytics: ^10.0.7
   flutter_local_notifications: ^13.0.0
   firebase_core: ^2.7.0
-
+  cached_network_image: ^3.2.3
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
