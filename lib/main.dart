@@ -1,6 +1,7 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:step/screens/loading_screen.dart';
 import 'palette.dart';
 
@@ -29,6 +30,9 @@ class MyApp extends StatelessWidget {
       title: 'STEP S',
       theme: ThemeData(
         primarySwatch: Palette.kToDark,
+        textTheme: GoogleFonts.poppinsTextTheme(
+          Theme.of(context).textTheme,
+        ),
       ),
       debugShowCheckedModeBanner: false,
       home: Loading(),

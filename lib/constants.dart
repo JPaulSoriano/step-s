@@ -1,5 +1,6 @@
 // ----- STRINGS ------
 import 'package:flutter/material.dart';
+import 'package:step/palette.dart';
 
 const baseURL = 'https://udd.steps.com.ph/api';
 const loginURL = baseURL + '/login';
@@ -35,7 +36,7 @@ TextButton kTextButton(String label, Function onPressed) {
     ),
     style: ButtonStyle(
         backgroundColor:
-            MaterialStateColor.resolveWith((states) => Colors.blue),
+            MaterialStateColor.resolveWith((states) => Palette.kToDark),
         padding: MaterialStateProperty.resolveWith(
             (states) => EdgeInsets.symmetric(vertical: 10))),
     onPressed: () => onPressed(),

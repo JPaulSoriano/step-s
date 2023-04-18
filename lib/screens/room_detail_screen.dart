@@ -367,7 +367,8 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                     Container(
                       width: MediaQuery.of(context).size.width - 40,
                       margin: EdgeInsets.only(left: 12, top: 15, bottom: 10),
-                      child: Text('${announcement.body ?? 'No Body'}'),
+                      child: Text(
+                          '${announcement.body?.replaceAll(RegExp('<p>|</p>|<br />'), '') ?? 'No Body'}'),
                     ),
                     InkWell(
                       onTap: () {

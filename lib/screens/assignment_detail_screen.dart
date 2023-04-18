@@ -115,8 +115,8 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
               ),
               SizedBox(height: 12),
               Text(
-                '${widget.assignment.instructions!}',
-                style: TextStyle(color: Colors.grey),
+                '${widget.assignment.instructions!.replaceAll(RegExp('<p>|</p>|<br />'), '')}',
+                style: TextStyle(color: Colors.black),
               ),
               SizedBox(height: 18),
               Divider(),

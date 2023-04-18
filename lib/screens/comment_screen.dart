@@ -1,3 +1,4 @@
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:step/constants.dart';
@@ -111,16 +112,23 @@ class _CommentScreenState extends State<CommentScreen> {
                                             width: 30,
                                             height: 30,
                                             decoration: BoxDecoration(
-                                                image: comment.user!.avatar !=
-                                                        null
-                                                    ? DecorationImage(
-                                                        image: NetworkImage(
-                                                            '${comment.user!.avatar}'),
-                                                        fit: BoxFit.cover)
-                                                    : null,
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                color: Colors.blueGrey),
+                                              image: comment.user!.avatar !=
+                                                      null
+                                                  ? DecorationImage(
+                                                      image: CachedNetworkImageProvider(
+                                                          '${comment.user!.avatar}'),
+                                                      fit: BoxFit.cover)
+                                                  : null,
+                                            ),
+                                            child: comment.user?.avatar == null
+                                                ? Center(
+                                                    child: Text(
+                                                      '${comment.user?.name?[0]}',
+                                                      style: TextStyle(
+                                                          fontSize: 20.0),
+                                                    ),
+                                                  )
+                                                : null,
                                           ),
                                           SizedBox(
                                             width: 10,
