@@ -24,6 +24,8 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'dart:async';
 
+import 'package:url_launcher/url_launcher.dart';
+
 class RoomDetailScreen extends StatefulWidget {
   final Room room;
 
@@ -166,6 +168,12 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     }
   }
 
+  googleMeet() async {
+    final url = widget.room.vclink ?? 'https://meet.google.com/';
+    final uri = Uri.parse(url);
+    await launchUrl(uri, mode: LaunchMode.externalApplication);
+  }
+
   @override
   void initState() {
     _getAnnouncements();
@@ -186,7 +194,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
         actions: [
           IconButton(
             icon: Icon(Icons.videocam),
-            onPressed: () {},
+            onPressed: () => googleMeet(),
           ),
         ],
         elevation: 0,

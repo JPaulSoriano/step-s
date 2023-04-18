@@ -5,6 +5,7 @@ class Room {
   String? name;
   String? section;
   String? key;
+  String? vclink;
   User? user;
 
   Room({
@@ -12,6 +13,7 @@ class Room {
     this.name,
     this.section,
     this.key,
+    this.vclink,
     this.user,
   });
 
@@ -23,6 +25,7 @@ class Room {
       name: json['name'],
       section: json['section'],
       key: json['key'],
+      vclink: json['vc_link'],
       user: User(
         id: json['teacher']['id'],
         name: json['teacher']['full_name'],
