@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:math';
+import 'package:cached_network_image/cached_network_image.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
@@ -326,7 +327,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                               CircleAvatar(
                                 backgroundImage:
                                     announcement.user?.avatar != null
-                                        ? NetworkImage(
+                                        ? CachedNetworkImageProvider(
                                             '${announcement.user!.avatar}')
                                         : null,
                                 child: announcement.user?.avatar == null
