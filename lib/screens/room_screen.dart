@@ -16,9 +16,6 @@ class RoomScreen extends StatefulWidget {
 }
 
 class _RoomScreenState extends State<RoomScreen> {
-  final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin =
-      FlutterLocalNotificationsPlugin();
-  final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
   final List<String> roomImages = [
     'images/b1.jpg',
     'images/b2.jpg',
@@ -64,45 +61,6 @@ class _RoomScreenState extends State<RoomScreen> {
   void initState() {
     retrieveRooms();
     super.initState();
-    _configureFirebaseListeners();
-    _initializeLocalNotifications();
-  }
-
-  void _configureFirebaseListeners() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("onMessage data: ${message.data}");
-      _showLocalNotification(message);
-    });
-  }
-
-  Future<void> _initializeLocalNotifications() async {
-    const AndroidInitializationSettings initializationSettingsAndroid =
-        AndroidInitializationSettings('@mipmap/ic_launcher');
-    final InitializationSettings initializationSettings =
-        InitializationSettings(android: initializationSettingsAndroid);
-    await _flutterLocalNotificationsPlugin.initialize(initializationSettings);
-  }
-
-  Future<void> _showLocalNotification(RemoteMessage message) async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-        AndroidNotificationDetails(
-      'channel_id',
-      'channel_name',
-      channelDescription: 'channel_description',
-      importance: Importance.high,
-      priority: Priority.high,
-      playSound: true,
-      styleInformation: DefaultStyleInformation(true, true),
-    );
-    const NotificationDetails platformChannelSpecifics =
-        NotificationDetails(android: androidPlatformChannelSpecifics);
-    await _flutterLocalNotificationsPlugin.show(
-      message.notification.hashCode,
-      message.notification!.title,
-      message.notification!.body,
-      platformChannelSpecifics,
-      payload: message.data['payload'],
-    );
   }
 
   @override
