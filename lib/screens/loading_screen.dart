@@ -45,9 +45,11 @@ class _LoadingState extends State<Loading> {
   }
 
   void _configureFirebaseListeners() {
-    FirebaseMessaging.onMessage.listen((RemoteMessage message) async {
-      print("onMessage data: ${message.data}");
-      _showLocalNotification(message);
+    FirebaseMessaging.onMessage.listen((RemoteMessage message) {
+      if (message.notification != null) {
+        print('Handling a foreground message: ${message.data}');
+        _showLocalNotification(message);
+      }
     });
   }
 

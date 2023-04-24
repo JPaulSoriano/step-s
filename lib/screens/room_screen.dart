@@ -1,7 +1,5 @@
 import 'dart:math';
-import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:step/constants.dart';
 import 'package:step/models/response_model.dart';
 import 'package:step/models/room_model.dart';
@@ -38,7 +36,6 @@ class _RoomScreenState extends State<RoomScreen> {
   Future<void> retrieveRooms() async {
     userId = await getUserId();
     ApiResponse response = await getRooms();
-
     if (response.error == null) {
       setState(() {
         _roomList = response.data as List<dynamic>;

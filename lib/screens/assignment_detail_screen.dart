@@ -55,7 +55,8 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
       ),
     );
     request.headers.addAll(
-        {'Accept': 'application/json', 'Authorization': 'Bearer $token'});
+      {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    );
 
     final response = await request.send();
 
