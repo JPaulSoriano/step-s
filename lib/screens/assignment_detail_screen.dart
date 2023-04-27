@@ -128,11 +128,9 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  if (widget.assignment.url != null) {
-                    _downloadFile(widget.assignment.url!);
-                  }
+                  downloadFile(widget.assignment.url!);
                 },
-                child: Text(widget.assignment.file ?? 'No File Attached'),
+                child: Text(widget.assignment.file!),
               ),
               Divider(),
               SizedBox(height: 18),
@@ -198,34 +196,26 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
     );
   }
 
-  Future<void> _downloadFile(String url) async {
+  Future<void> downloadFile(String url) async {
+    // Check if permission is granted
     final status = await Permission.storage.status;
     if (!status.isGranted) {
+      // Request permission
       await Permission.storage.request();
     }
+    try {
+      var request = await http.get(Uri.parse(url));
+      var bytes = request.bodyBytes;
+      String fileName = url.split('/').last;
+      String dir = '/storage/emulated/0/Download';
+      File file = File('$dir/$fileName');
+      await file.writeAsBytes(bytes);
 
-    final response = await http.get(Uri.parse(url));
-    final fileName = url.split('/').last;
-    final fileExtension = fileName.split('.').last;
-    final fileNameWithoutExtension =
-        fileName.substring(0, fileName.length - fileExtension.length - 1);
-    final downloadsDir = Directory('/storage/emulated/0/Download');
-    await downloadsDir.create(recursive: true);
-    var filePath = '${downloadsDir.path}/$fileName';
-    var fileNumber = 1;
-    while (await File(filePath).exists()) {
-      // if file with same name already exists, rename it by adding a number to the filename
-      filePath =
-          '${downloadsDir.path}/$fileNameWithoutExtension($fileNumber).$fileExtension';
-      fileNumber++;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('${fileName} Downloaded Successfully'),
+      ));
+    } catch (e) {
+      print(e);
     }
-    final file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('File downloaded to ${file.path}'),
-      ),
-    );
   }
 }

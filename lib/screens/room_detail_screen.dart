@@ -391,7 +391,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                         width: MediaQuery.of(context).size.width - 30,
                         margin: EdgeInsets.only(left: 15),
                         child: Text(
-                          "Add class comment",
+                          "Class Comments",
                           style: TextStyle(fontSize: 12, color: Colors.grey),
                         ),
                       ),
@@ -481,32 +481,33 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
         return _getMaterials();
       },
       child: ListView.builder(
-          itemCount: _materialsList.length,
-          itemBuilder: (BuildContext context, int index) {
-            Materials material = _materialsList[index];
-            return InkWell(
-              onTap: () {
-                _downloadFile(material.url!);
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: Colors.grey),
-                        child: Icon(
-                          Icons.assignment,
-                          color: Colors.white,
-                          size: 30,
-                        ),
+        itemCount: _materialsList.length,
+        itemBuilder: (BuildContext context, int index) {
+          Materials material = _materialsList[index];
+          return InkWell(
+            onTap: () {
+              downloadFile(material.url!);
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(15.0),
+              child: Container(
+                child: Row(
+                  children: [
+                    Container(
+                      height: 50,
+                      width: 50,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(30),
+                          color: Colors.grey),
+                      child: Icon(
+                        Icons.assignment,
+                        color: Colors.white,
+                        size: 30,
                       ),
-                      SizedBox(width: 10),
-                      Column(
+                    ),
+                    SizedBox(width: 10),
+                    Expanded(
+                      child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Text(
@@ -523,13 +524,15 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                             ),
                           ),
                         ],
-                      )
-                    ],
-                  ),
+                      ),
+                    )
+                  ],
                 ),
               ),
-            );
-          }),
+            ),
+          );
+        },
+      ),
     );
   }
 
@@ -707,34 +710,26 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     );
   }
 
-  Future<void> _downloadFile(String url) async {
+  Future<void> downloadFile(String url) async {
+    // Check if permission is granted
     final status = await Permission.storage.status;
     if (!status.isGranted) {
+      // Request permission
       await Permission.storage.request();
     }
+    try {
+      var request = await http.get(Uri.parse(url));
+      var bytes = request.bodyBytes;
+      String fileName = url.split('/').last;
+      String dir = '/storage/emulated/0/Download';
+      File file = File('$dir/$fileName');
+      await file.writeAsBytes(bytes);
 
-    final response = await http.get(Uri.parse(url));
-    final fileName = url.split('/').last;
-    final fileExtension = fileName.split('.').last;
-    final fileNameWithoutExtension =
-        fileName.substring(0, fileName.length - fileExtension.length - 1);
-    final downloadsDir = Directory('/storage/emulated/0/Download');
-    await downloadsDir.create(recursive: true);
-    var filePath = '${downloadsDir.path}/$fileName';
-    var fileNumber = 1;
-    while (await File(filePath).exists()) {
-      // if file with same name already exists, rename it by adding a number to the filename
-      filePath =
-          '${downloadsDir.path}/$fileNameWithoutExtension($fileNumber).$fileExtension';
-      fileNumber++;
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('${fileName} Downloaded Successfully'),
+      ));
+    } catch (e) {
+      print(e);
     }
-    final file = File(filePath);
-    await file.writeAsBytes(response.bodyBytes);
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('File downloaded to ${file.path}'),
-      ),
-    );
   }
 }
