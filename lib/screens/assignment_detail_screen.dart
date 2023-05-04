@@ -128,9 +128,11 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
               ),
               TextButton(
                 onPressed: () {
-                  downloadFile(widget.assignment.url!);
+                  if (widget.assignment.url != null) {
+                    downloadFile(widget.assignment.url!);
+                  }
                 },
-                child: Text(widget.assignment.file!),
+                child: Text(widget.assignment.file ?? 'No Attachments'),
               ),
               Divider(),
               SizedBox(height: 18),
