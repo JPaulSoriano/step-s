@@ -21,10 +21,8 @@ class _CommentScreenState extends State<CommentScreen> {
   List<dynamic> _commentsList = [];
   bool _loading = true;
   int userId = 0;
-  int _editCommentId = 0;
   TextEditingController _txtCommentController = TextEditingController();
 
-  // Get comments
   Future<void> _getComments() async {
     userId = await getUserId();
     ApiResponse response = await getComments(widget.announcementID ?? 0);
@@ -46,7 +44,6 @@ class _CommentScreenState extends State<CommentScreen> {
     }
   }
 
-  // create comment
   void _createComment() async {
     ApiResponse response = await createComment(
         widget.announcementID ?? 0, _txtCommentController.text);

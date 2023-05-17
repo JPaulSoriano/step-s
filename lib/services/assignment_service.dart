@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:step/constants.dart';
 import 'package:step/models/assignment_model.dart';
 import 'package:step/models/response_model.dart';
@@ -36,6 +37,55 @@ Future<ApiResponse> getAssignments(int roomId) async {
     }
   } catch (e) {
     print(e);
+    apiResponse.error = serverError;
+  }
+  return apiResponse;
+}
+
+Future<ApiResponse> submitAssignment(File? file, int assignmentId) async {
+  ApiResponse apiResponse = ApiResponse();
+  try {
+    if (file == null) {
+      apiResponse.error = 'Please attach a file before submitting.';
+      return apiResponse;
+    }
+
+    String token = await getToken();
+    final request = http.MultipartRequest(
+      'POST',
+      Uri.parse('${SubmitAssignmentURL}/$assignmentId/submit'),
+    );
+
+    request.fields['assignment_id'] = assignmentId.toString();
+    request.files.add(
+      await http.MultipartFile.fromPath(
+        'file',
+        file.path,
+        filename: file.path.split('/').last,
+      ),
+    );
+    request.headers.addAll(
+      {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
+    );
+
+    final streamedResponse = await request.send();
+    final response = await http.Response.fromStream(streamedResponse);
+
+    switch (response.statusCode) {
+      case 200:
+        apiResponse.data = jsonDecode(response.body)['message'];
+        break;
+      case 403:
+        apiResponse.error = jsonDecode(response.body)['error'];
+        break;
+      case 401:
+        apiResponse.error = unauthorized;
+        break;
+      default:
+        apiResponse.error = somethingWentWrong;
+        break;
+    }
+  } catch (e) {
     apiResponse.error = serverError;
   }
   return apiResponse;

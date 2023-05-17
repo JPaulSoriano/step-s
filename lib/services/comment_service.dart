@@ -57,10 +57,7 @@ Future<ApiResponse> createComment(int announcementID, String? body) async {
 
     switch (response.statusCode) {
       case 200:
-        apiResponse.data = jsonDecode(response.body);
-        break;
-      case 403:
-        apiResponse.error = jsonDecode(response.body)['message'];
+        apiResponse.data = jsonDecode(response.body)['message'];
         break;
       case 401:
         apiResponse.error = unauthorized;

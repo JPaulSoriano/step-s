@@ -19,25 +19,22 @@ class _JoinRoomFormState extends State<JoinRoomForm> {
     if (_formKey.currentState!.validate()) {
       _formKey.currentState!.save();
 
-      // Call joinRoom function with the room key to join the room
       ApiResponse response = await joinRoom(roomKey);
 
       if (response.error != null) {
-        // Display error message if there is an error in joining the room
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${response.error}'),
           ),
         );
       } else {
-        // Display success message if the room is joined successfully
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
             content: Text('${response.data}'),
           ),
         );
         FirebaseMessaging.instance.subscribeToTopic(roomKey);
-        Navigator.pop(context); // Pop the dialog after joining the room
+        Navigator.pop(context);
       }
     }
   }

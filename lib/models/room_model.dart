@@ -17,8 +17,6 @@ class Room {
     this.user,
   });
 
-// map json to post model
-
   factory Room.fromJson(Map<String, dynamic> json) {
     return Room(
       id: json['id'],

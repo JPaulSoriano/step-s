@@ -21,7 +21,7 @@ Future<ApiResponse> joinRoom(String roomKey) async {
       case 200:
         apiResponse.data = jsonDecode(response.body)['join'];
         break;
-      case 400:
+      case 403:
         apiResponse.error = jsonDecode(response.body)['error'];
         break;
       case 401:

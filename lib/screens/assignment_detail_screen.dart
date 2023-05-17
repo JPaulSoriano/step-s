@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
@@ -7,6 +6,9 @@ import 'package:file_picker/file_picker.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:step/constants.dart';
 import 'package:step/models/assignment_model.dart';
+import 'package:step/models/response_model.dart';
+import 'package:step/screens/login_screen.dart';
+import 'package:step/services/assignment_service.dart';
 import 'package:step/services/user_service.dart';
 
 class AssignmentDetailScreen extends StatefulWidget {
@@ -19,62 +21,35 @@ class AssignmentDetailScreen extends StatefulWidget {
 }
 
 class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
-  File? _file;
+  File? file;
 
   Future<void> _selectFile() async {
     final result = await FilePicker.platform.pickFiles();
-
     if (result != null) {
       setState(() {
-        _file = File(result.files.single.path!);
+        file = File(result.files.single.path!);
       });
     }
   }
 
-  Future<void> _submitAssignment() async {
-    if (_file == null) {
+  void _submitAssignment() async {
+    ApiResponse response =
+        await submitAssignment(file, widget.assignment.id ?? 0);
+    if (response.error == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Please attach a file before submitting.'),
+          content: Text('${response.data}'),
         ),
       );
-      return;
-    }
-    String token = await getToken();
-    final request = http.MultipartRequest(
-      'POST',
-      Uri.parse('${SubmitAssignmentURL}/${widget.assignment.id}/submit'),
-    );
-
-    request.fields['assignment_id'] = widget.assignment.id.toString();
-    request.files.add(
-      await http.MultipartFile.fromPath(
-        'file',
-        _file!.path,
-        filename: _file!.path.split('/').last,
-      ),
-    );
-    request.headers.addAll(
-      {'Accept': 'application/json', 'Authorization': 'Bearer $token'},
-    );
-
-    final response = await request.send();
-
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse =
-          json.decode(await response.stream.bytesToString());
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(jsonResponse['message']),
-        ),
-      );
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Login()),
+                (route) => false)
+          });
     } else {
-      Map<String, dynamic> jsonResponse =
-          json.decode(await response.stream.bytesToString());
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(jsonResponse['message']),
-        ),
+        SnackBar(content: Text('${response.error}')),
       );
     }
   }
@@ -179,9 +154,9 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                 width: double.infinity,
                 child: OutlinedButton(
                   onPressed: _selectFile,
-                  child: Text(_file == null
+                  child: Text(file == null
                       ? '+ Add Attachment'
-                      : '${_file!.path.split('/').last}'),
+                      : '${file!.path.split('/').last}'),
                 ),
               ),
               SizedBox(
@@ -199,10 +174,8 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
   }
 
   Future<void> downloadFile(String url) async {
-    // Check if permission is granted
     final status = await Permission.storage.status;
     if (!status.isGranted) {
-      // Request permission
       await Permission.storage.request();
     }
     try {
@@ -212,7 +185,6 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
       String dir = '/storage/emulated/0/Download';
       File file = File('$dir/$fileName');
       await file.writeAsBytes(bytes);
-
       ScaffoldMessenger.of(context).showSnackBar(SnackBar(
         content: Text('${fileName} Downloaded Successfully'),
       ));
