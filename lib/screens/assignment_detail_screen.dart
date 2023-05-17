@@ -98,7 +98,7 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
               Divider(),
               SizedBox(height: 18),
               Text(
-                'Attachments',
+                'Instructor Attachments',
                 style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
               ),
               TextButton(
@@ -110,7 +110,24 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                 child: Text(widget.assignment.file ?? 'No Attachments'),
               ),
               Divider(),
+              SizedBox(
+                width: double.infinity,
+                child: OutlinedButton(
+                  onPressed: _selectFile,
+                  child: Text(file == null
+                      ? '+ Your Attachment'
+                      : '${file!.path.split('/').last}'),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: _submitAssignment,
+                  child: Text('Submit'),
+                ),
+              ),
               SizedBox(height: 18),
+              Divider(),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -124,7 +141,6 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                         : 'No score recorded yet',
                     textAlign: TextAlign.right,
                     style: TextStyle(
-                      fontSize: 10,
                       color: Colors.grey,
                       fontWeight: FontWeight.w600,
                     ),
@@ -139,6 +155,7 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                   var studentAssignment =
                       widget.assignment.studentAssignments![index];
                   return Card(
+                    elevation: 0,
                     child: ListTile(
                       title: Text(
                         studentAssignment.file!,
@@ -150,22 +167,9 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
                   );
                 },
               ),
-              SizedBox(
-                width: double.infinity,
-                child: OutlinedButton(
-                  onPressed: _selectFile,
-                  child: Text(file == null
-                      ? '+ Add Attachment'
-                      : '${file!.path.split('/').last}'),
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                child: ElevatedButton(
-                  onPressed: _submitAssignment,
-                  child: Text('Submit'),
-                ),
-              ),
+              SizedBox(height: 18),
+              Divider(),
+              SizedBox(height: 18),
             ],
           ),
         ),
