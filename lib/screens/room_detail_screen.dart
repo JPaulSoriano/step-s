@@ -433,22 +433,18 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Row(
-                            children: [
-                              Text(
-                                '${assessment.title ?? 'No Title'} ',
-                                style: TextStyle(
-                                  letterSpacing: 1,
-                                ),
-                              ),
-                              Text(
-                                '${assessment.status}',
-                                style: TextStyle(
-                                  color: Colors.grey,
-                                  fontSize: 12,
-                                ),
-                              ),
-                            ],
+                          Text(
+                            '${assessment.title ?? 'No Title'} ',
+                            style: TextStyle(
+                              letterSpacing: 1,
+                            ),
+                          ),
+                          Text(
+                            '${assessment.status}',
+                            style: TextStyle(
+                              color: Colors.grey,
+                              fontSize: 12,
+                            ),
                           ),
                           Text(
                             'Start: ${assessment.startDate}',

@@ -1,6 +1,5 @@
 // Get room announcements
 import 'dart:convert';
-
 import 'package:step/constants.dart';
 import 'package:step/models/announcement_model.dart';
 import 'package:step/models/response_model.dart';
