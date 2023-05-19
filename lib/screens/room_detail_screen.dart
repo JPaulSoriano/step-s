@@ -7,6 +7,7 @@ import 'package:step/constants.dart';
 import 'package:step/models/announcement_model.dart';
 import 'package:step/models/assessment_model.dart';
 import 'package:step/models/assignment_model.dart';
+import 'package:step/models/attendance_model.dart';
 import 'package:step/models/material_model.dart';
 import 'package:step/models/people_model.dart';
 import 'package:step/models/response_model.dart';
@@ -17,6 +18,7 @@ import 'package:step/screens/login_screen.dart';
 import 'package:step/services/announcement_service.dart';
 import 'package:step/services/assessment_service.dart';
 import 'package:step/services/assignment_service.dart';
+import 'package:step/services/attendance_service.dart';
 import 'package:step/services/material_service.dart';
 import 'package:step/services/people_servide.dart';
 import 'package:step/services/user_service.dart';
@@ -54,6 +56,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
   List<dynamic> _materialsList = [];
   List<dynamic> _assignmentsList = [];
   List<dynamic> _peopleList = [];
+  List<dynamic> _attendancesList = [];
   bool _loading = true;
   int userId = 0;
   int _currentIndex = 0;
@@ -168,6 +171,28 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     }
   }
 
+  // Get Attendances
+  Future<void> _getAttendances() async {
+    userId = await getUserId();
+    ApiResponse response = await getAttendances(widget.room.id ?? 0);
+
+    if (response.error == null) {
+      setState(() {
+        _attendancesList = response.data as List<dynamic>;
+        _loading = _loading ? !_loading : _loading;
+      });
+    } else if (response.error == unauthorized) {
+      logout().then((value) => {
+            Navigator.of(context).pushAndRemoveUntil(
+                MaterialPageRoute(builder: (context) => Login()),
+                (route) => false)
+          });
+    } else {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('${response.error}')));
+    }
+  }
+
   googleMeet() async {
     final url = widget.room.vclink ?? 'https://meet.google.com/';
     final uri = Uri.parse(url);
@@ -181,6 +206,7 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
     _getMaterials();
     _getAssignments();
     _getPeople();
+    _getAttendances();
     super.initState();
   }
 
@@ -284,6 +310,10 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
             icon: Icon(Icons.person),
             label: 'People',
           ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.date_range),
+            label: 'Attendance',
+          ),
         ],
       ),
     );
@@ -301,6 +331,8 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
         return _buildAssignments();
       case 4:
         return _buildPeople();
+      case 5:
+        return _buildAttendances();
       default:
         return Container();
     }
@@ -703,6 +735,51 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildAttendances() {
+    return RefreshIndicator(
+      onRefresh: () {
+        return _getAttendances();
+      },
+      child: ListView.builder(
+          itemCount: _attendancesList.length,
+          itemBuilder: (BuildContext context, int index) {
+            Attendance attendance = _attendancesList[index];
+            return ListTile(
+              title: Text(attendance.description ?? ''),
+              subtitle: Text(
+                '${DateFormat.yMMMMd().format(DateTime.parse(attendance.date ?? ''))}',
+              ),
+              trailing: TextButton(
+                onPressed: () {
+                  attend(attendance.id ?? 0).then((response) {
+                    if (response.error == null) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${response.data}')),
+                      );
+                    } else if (response.error == unauthorized) {
+                      logout().then((value) {
+                        Navigator.of(context).pushAndRemoveUntil(
+                          MaterialPageRoute(builder: (context) => Login()),
+                          (route) => false,
+                        );
+                      });
+                    } else {
+                      setState(() {
+                        _loading = false;
+                      });
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text('${response.error}')),
+                      );
+                    }
+                  });
+                },
+                child: Text('Attend'),
+              ),
+            );
+          }),
     );
   }
 
