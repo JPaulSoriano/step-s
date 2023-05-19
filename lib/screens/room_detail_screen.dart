@@ -343,94 +343,101 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
       onRefresh: () {
         return _getAnnouncements();
       },
-      child: ListView.builder(
-          itemCount: _announcementsList.length,
-          itemBuilder: (BuildContext context, int index) {
-            Announcement announcement = _announcementsList[index];
-            return Container(
-                margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
-                decoration: BoxDecoration(color: Colors.white, boxShadow: [
-                  BoxShadow(color: Colors.black26, blurRadius: 0)
-                ]),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: _announcementsList.isEmpty
+          ? Center(child: Text('No Announcements'))
+          : ListView.builder(
+              itemCount: _announcementsList.length,
+              itemBuilder: (BuildContext context, int index) {
+                Announcement announcement = _announcementsList[index];
+                return Container(
+                    margin: EdgeInsets.symmetric(horizontal: 15, vertical: 10),
+                    decoration: BoxDecoration(color: Colors.white, boxShadow: [
+                      BoxShadow(color: Colors.black26, blurRadius: 0)
+                    ]),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Container(
+                              margin: EdgeInsets.only(
+                                  left: 15, top: 15, bottom: 10),
+                              child: Row(
+                                children: [
+                                  SizedBox(width: 10),
+                                  CircleAvatar(
+                                    backgroundImage:
+                                        announcement.user?.avatar != null
+                                            ? CachedNetworkImageProvider(
+                                                '${announcement.user!.avatar}')
+                                            : null,
+                                    child: announcement.user?.avatar == null
+                                        ? Text(
+                                            announcement.user?.name?[0] ?? '',
+                                            style: TextStyle(fontSize: 24),
+                                          )
+                                        : null,
+                                  ),
+                                  SizedBox(width: 10),
+                                  Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${announcement.user!.name}',
+                                          style: TextStyle(),
+                                        ),
+                                        Text(
+                                          '${DateFormat.yMMMMd().format(DateTime.parse(announcement.created!))}',
+                                          style: TextStyle(color: Colors.grey),
+                                        ),
+                                      ]),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
                         Container(
+                          width: MediaQuery.of(context).size.width - 40,
                           margin:
                               EdgeInsets.only(left: 15, top: 15, bottom: 10),
-                          child: Row(
-                            children: [
-                              SizedBox(width: 10),
-                              CircleAvatar(
-                                backgroundImage:
-                                    announcement.user?.avatar != null
-                                        ? CachedNetworkImageProvider(
-                                            '${announcement.user!.avatar}')
-                                        : null,
-                                child: announcement.user?.avatar == null
-                                    ? Text(
-                                        announcement.user?.name?[0] ?? '',
-                                        style: TextStyle(fontSize: 24),
-                                      )
-                                    : null,
-                              ),
-                              SizedBox(width: 10),
-                              Column(
-                                  mainAxisAlignment: MainAxisAlignment.center,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      '${announcement.user!.name}',
-                                      style: TextStyle(),
-                                    ),
-                                    Text(
-                                      '${DateFormat.yMMMMd().format(DateTime.parse(announcement.created!))}',
-                                      style: TextStyle(color: Colors.grey),
-                                    ),
-                                  ]),
-                            ],
+                          child: Text(
+                            '${announcement.title ?? 'No Title'}',
+                            style: TextStyle(fontSize: 15, color: Colors.grey),
                           ),
                         ),
-                      ],
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width - 40,
-                      margin: EdgeInsets.only(left: 15, top: 15, bottom: 10),
-                      child: Text(
-                        '${announcement.title ?? 'No Title'}',
-                        style: TextStyle(fontSize: 15, color: Colors.grey),
-                      ),
-                    ),
-                    Container(
-                      width: MediaQuery.of(context).size.width - 40,
-                      margin: EdgeInsets.only(left: 12, top: 15, bottom: 10),
-                      child: Text(
-                          '${announcement.body?.replaceAll(RegExp('<p>|</p>|<br />'), '') ?? 'No Body'}'),
-                    ),
-                    InkWell(
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => CommentScreen(
-                                  announcementID: announcement.id,
-                                )));
-                      },
-                      child: Container(
-                        alignment: Alignment.centerLeft,
-                        height: 40,
-                        width: MediaQuery.of(context).size.width - 30,
-                        margin: EdgeInsets.only(left: 15),
-                        child: Text(
-                          "Class Comments",
-                          style: TextStyle(fontSize: 12, color: Colors.grey),
+                        Container(
+                          width: MediaQuery.of(context).size.width - 40,
+                          margin:
+                              EdgeInsets.only(left: 12, top: 15, bottom: 10),
+                          child: Text(
+                              '${announcement.body?.replaceAll(RegExp('<p>|</p>|<br />'), '') ?? 'No Body'}'),
                         ),
-                      ),
-                    )
-                  ],
-                ));
-          }),
+                        InkWell(
+                          onTap: () {
+                            Navigator.of(context).push(MaterialPageRoute(
+                                builder: (context) => CommentScreen(
+                                      announcementID: announcement.id,
+                                    )));
+                          },
+                          child: Container(
+                            alignment: Alignment.centerLeft,
+                            height: 40,
+                            width: MediaQuery.of(context).size.width - 30,
+                            margin: EdgeInsets.only(left: 15),
+                            child: Text(
+                              '${announcement.commentCount ?? 'No Class Comment'} Class Comment',
+                              style:
+                                  TextStyle(fontSize: 12, color: Colors.grey),
+                            ),
+                          ),
+                        )
+                      ],
+                    ));
+              }),
     );
   }
 
@@ -439,67 +446,69 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
       onRefresh: () {
         return _getAssessments();
       },
-      child: ListView.builder(
-          itemCount: _assessmentsList.length,
-          itemBuilder: (BuildContext context, int index) {
-            Assessment assessment = _assessmentsList[index];
-            return InkWell(
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: Colors.grey),
-                        child: Icon(
-                          Icons.assignment,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+      child: _assessmentsList.isEmpty
+          ? Center(child: Text('No Assessments'))
+          : ListView.builder(
+              itemCount: _assessmentsList.length,
+              itemBuilder: (BuildContext context, int index) {
+                Assessment assessment = _assessmentsList[index];
+                return InkWell(
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      child: Row(
                         children: [
-                          Text(
-                            '${assessment.title ?? 'No Title'} ',
-                            style: TextStyle(
-                              letterSpacing: 1,
+                          Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Colors.grey),
+                            child: Icon(
+                              Icons.assignment,
+                              color: Colors.white,
+                              size: 30,
                             ),
                           ),
-                          Text(
-                            '${assessment.status}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            'Start: ${assessment.startDate}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                            ),
-                          ),
-                          Text(
-                            'Due: ${assessment.endDate}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                            ),
-                          ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${assessment.title ?? 'No Title'} ',
+                                style: TextStyle(
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                              Text(
+                                '${assessment.status}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                'Start: ${assessment.startDate}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                              Text(
+                                'Due: ${assessment.endDate}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          )
                         ],
-                      )
-                    ],
+                      ),
+                    ),
                   ),
-                ),
-              ),
-            );
-          }),
+                );
+              }),
     );
   }
 
@@ -508,59 +517,61 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
       onRefresh: () {
         return _getMaterials();
       },
-      child: ListView.builder(
-        itemCount: _materialsList.length,
-        itemBuilder: (BuildContext context, int index) {
-          Materials material = _materialsList[index];
-          return InkWell(
-            onTap: () {
-              downloadFile(material.url!);
-            },
-            child: Padding(
-              padding: const EdgeInsets.all(15.0),
-              child: Container(
-                child: Row(
-                  children: [
-                    Container(
-                      height: 50,
-                      width: 50,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(30),
-                          color: Colors.grey),
-                      child: Icon(
-                        Icons.assignment,
-                        color: Colors.white,
-                        size: 30,
-                      ),
-                    ),
-                    SizedBox(width: 10),
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+      child: _materialsList.isEmpty
+          ? Center(child: Text('No Materials'))
+          : ListView.builder(
+              itemCount: _materialsList.length,
+              itemBuilder: (BuildContext context, int index) {
+                Materials material = _materialsList[index];
+                return InkWell(
+                  onTap: () {
+                    downloadFile(material.url!);
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      child: Row(
                         children: [
-                          Text(
-                            '${material.title ?? 'No Title'} ',
-                            style: TextStyle(
-                              letterSpacing: 1,
+                          Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Colors.grey),
+                            child: Icon(
+                              Icons.assignment,
+                              color: Colors.white,
+                              size: 30,
                             ),
                           ),
-                          Text(
-                            '${material.description ?? 'No Description'}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
+                          SizedBox(width: 10),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  '${material.title ?? 'No Title'} ',
+                                  style: TextStyle(
+                                    letterSpacing: 1,
+                                  ),
+                                ),
+                                Text(
+                                  '${material.description ?? 'No Description'}',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                  ),
+                                ),
+                              ],
                             ),
-                          ),
+                          )
                         ],
                       ),
-                    )
-                  ],
-                ),
-              ),
+                    ),
+                  ),
+                );
+              },
             ),
-          );
-        },
-      ),
     );
   }
 
@@ -569,62 +580,64 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
       onRefresh: () {
         return _getAssignments();
       },
-      child: ListView.builder(
-          itemCount: _assignmentsList.length,
-          itemBuilder: (BuildContext context, int index) {
-            Assignment assignment = _assignmentsList[index];
-            return InkWell(
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) =>
-                        AssignmentDetailScreen(assignment: assignment),
+      child: _assignmentsList.isEmpty
+          ? Center(child: Text('No Assignments'))
+          : ListView.builder(
+              itemCount: _assignmentsList.length,
+              itemBuilder: (BuildContext context, int index) {
+                Assignment assignment = _assignmentsList[index];
+                return InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) =>
+                            AssignmentDetailScreen(assignment: assignment),
+                      ),
+                    );
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.all(15.0),
+                    child: Container(
+                      child: Row(
+                        children: [
+                          Container(
+                            height: 50,
+                            width: 50,
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(30),
+                                color: Colors.grey),
+                            child: Icon(
+                              Icons.assignment,
+                              color: Colors.white,
+                              size: 30,
+                            ),
+                          ),
+                          SizedBox(width: 10),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                '${assignment.title ?? 'No Title'} ',
+                                style: TextStyle(
+                                  letterSpacing: 1,
+                                ),
+                              ),
+                              Text(
+                                'Due: ${DateFormat.yMMMMd().format(DateTime.parse(assignment.due!))}',
+                                style: TextStyle(
+                                  color: Colors.grey,
+                                  fontSize: 12,
+                                ),
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
                   ),
                 );
-              },
-              child: Padding(
-                padding: const EdgeInsets.all(15.0),
-                child: Container(
-                  child: Row(
-                    children: [
-                      Container(
-                        height: 50,
-                        width: 50,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(30),
-                            color: Colors.grey),
-                        child: Icon(
-                          Icons.assignment,
-                          color: Colors.white,
-                          size: 30,
-                        ),
-                      ),
-                      SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${assignment.title ?? 'No Title'} ',
-                            style: TextStyle(
-                              letterSpacing: 1,
-                            ),
-                          ),
-                          Text(
-                            'Due: ${DateFormat.yMMMMd().format(DateTime.parse(assignment.due!))}',
-                            style: TextStyle(
-                              color: Colors.grey,
-                              fontSize: 12,
-                            ),
-                          ),
-                        ],
-                      )
-                    ],
-                  ),
-                ),
-              ),
-            );
-          }),
+              }),
     );
   }
 
@@ -633,20 +646,22 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
       onRefresh: () {
         return _getPeople();
       },
-      child: ListView.separated(
-        itemCount: _peopleList.length,
-        separatorBuilder: (BuildContext context, int index) => Divider(),
-        itemBuilder: (BuildContext context, int index) {
-          People people = _peopleList[index];
-          if (people.staff != null) {
-            return _buildStaffRow(people.staff!);
-          } else if (people.student != null) {
-            return _buildStudentRow(people.student!);
-          } else {
-            return Container(); // return an empty container if there's no staff or student
-          }
-        },
-      ),
+      child: _peopleList.isEmpty
+          ? Center(child: Text('No People'))
+          : ListView.separated(
+              itemCount: _peopleList.length,
+              separatorBuilder: (BuildContext context, int index) => Divider(),
+              itemBuilder: (BuildContext context, int index) {
+                People people = _peopleList[index];
+                if (people.staff != null) {
+                  return _buildStaffRow(people.staff!);
+                } else if (people.student != null) {
+                  return _buildStudentRow(people.student!);
+                } else {
+                  return Container(); // return an empty container if there's no staff or student
+                }
+              },
+            ),
     );
   }
 
@@ -743,43 +758,48 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
       onRefresh: () {
         return _getAttendances();
       },
-      child: ListView.builder(
-          itemCount: _attendancesList.length,
-          itemBuilder: (BuildContext context, int index) {
-            Attendance attendance = _attendancesList[index];
-            return ListTile(
-              title: Text(attendance.description ?? ''),
-              subtitle: Text(
-                '${DateFormat.yMMMMd().format(DateTime.parse(attendance.date ?? ''))}',
-              ),
-              trailing: TextButton(
-                onPressed: () {
-                  attend(attendance.id ?? 0).then((response) {
-                    if (response.error == null) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${response.data}')),
-                      );
-                    } else if (response.error == unauthorized) {
-                      logout().then((value) {
-                        Navigator.of(context).pushAndRemoveUntil(
-                          MaterialPageRoute(builder: (context) => Login()),
-                          (route) => false,
-                        );
-                      });
-                    } else {
-                      setState(() {
-                        _loading = false;
-                      });
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text('${response.error}')),
-                      );
-                    }
-                  });
-                },
-                child: Text('Attend'),
-              ),
-            );
-          }),
+      child: _attendancesList.isEmpty
+          ? Center(child: Text('No Attendances'))
+          : ListView.builder(
+              itemCount: _attendancesList.length,
+              itemBuilder: (BuildContext context, int index) {
+                Attendance attendance = _attendancesList[index];
+                return Card(
+                  child: ListTile(
+                    title: Text(attendance.description ?? ''),
+                    subtitle: Text(
+                      '${DateFormat.yMMMMd().format(DateTime.parse(attendance.date ?? ''))}',
+                    ),
+                    trailing: TextButton(
+                      onPressed: () {
+                        attend(attendance.id ?? 0).then((response) {
+                          if (response.error == null) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('${response.data}')),
+                            );
+                          } else if (response.error == unauthorized) {
+                            logout().then((value) {
+                              Navigator.of(context).pushAndRemoveUntil(
+                                MaterialPageRoute(
+                                    builder: (context) => Login()),
+                                (route) => false,
+                              );
+                            });
+                          } else {
+                            setState(() {
+                              _loading = false;
+                            });
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text('${response.error}')),
+                            );
+                          }
+                        });
+                      },
+                      child: Text('Attend'),
+                    ),
+                  ),
+                );
+              }),
     );
   }
 

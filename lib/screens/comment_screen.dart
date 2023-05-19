@@ -89,74 +89,79 @@ class _CommentScreenState extends State<CommentScreen> {
                       onRefresh: () {
                         return _getComments();
                       },
-                      child: ListView.builder(
-                          itemCount: _commentsList.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            Comment comment = _commentsList[index];
-                            return Container(
-                              padding: EdgeInsets.all(10),
-                              width: MediaQuery.of(context).size.width,
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
+                      child: _commentsList.isEmpty
+                          ? Center(child: Text('No Comments'))
+                          : ListView.builder(
+                              itemCount: _commentsList.length,
+                              itemBuilder: (BuildContext context, int index) {
+                                Comment comment = _commentsList[index];
+                                return Container(
+                                  padding: EdgeInsets.all(10),
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
                                       Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Container(
-                                            width: 30,
-                                            height: 30,
-                                            decoration: BoxDecoration(
-                                              image: comment.user!.avatar !=
-                                                      null
-                                                  ? DecorationImage(
-                                                      image: CachedNetworkImageProvider(
-                                                          '${comment.user!.avatar}'),
-                                                      fit: BoxFit.cover)
-                                                  : null,
-                                            ),
-                                            child: comment.user?.avatar == null
-                                                ? Center(
-                                                    child: Text(
-                                                      '${comment.user?.name?[0]}',
-                                                      style: TextStyle(
-                                                          fontSize: 20.0),
-                                                    ),
-                                                  )
-                                                : null,
-                                          ),
-                                          SizedBox(
-                                            width: 10,
-                                          ),
-                                          Text(
-                                            '${comment.user!.name}',
-                                            style: TextStyle(
-                                                fontWeight: FontWeight.w500,
-                                                fontSize: 16),
-                                          ),
-                                          Text(
-                                            '${DateFormat.yMMMMd().format(DateTime.parse(comment.created!))}',
-                                            style: TextStyle(
-                                                fontSize: 12,
-                                                color: Colors.grey),
+                                          Row(
+                                            children: [
+                                              Container(
+                                                width: 30,
+                                                height: 30,
+                                                decoration: BoxDecoration(
+                                                  image: comment.user!.avatar !=
+                                                          null
+                                                      ? DecorationImage(
+                                                          image: CachedNetworkImageProvider(
+                                                              '${comment.user!.avatar}'),
+                                                          fit: BoxFit.cover)
+                                                      : null,
+                                                ),
+                                                child: comment.user?.avatar ==
+                                                        null
+                                                    ? Center(
+                                                        child: Text(
+                                                          '${comment.user?.name?[0]}',
+                                                          style: TextStyle(
+                                                              fontSize: 20.0),
+                                                        ),
+                                                      )
+                                                    : null,
+                                              ),
+                                              SizedBox(
+                                                width: 10,
+                                              ),
+                                              Text(
+                                                '${comment.user!.name}',
+                                                style: TextStyle(
+                                                    fontWeight: FontWeight.w500,
+                                                    fontSize: 16),
+                                              ),
+                                              Text(
+                                                '${DateFormat.yMMMMd().format(DateTime.parse(comment.created!))}',
+                                                style: TextStyle(
+                                                    fontSize: 12,
+                                                    color: Colors.grey),
+                                              ),
+                                            ],
                                           ),
                                         ],
                                       ),
+                                      SizedBox(
+                                        height: 10,
+                                      ),
+                                      Container(
+                                        margin:
+                                            const EdgeInsets.only(left: 40.0),
+                                        child: Text('${comment.body}'),
+                                      )
                                     ],
                                   ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Container(
-                                    margin: const EdgeInsets.only(left: 40.0),
-                                    child: Text('${comment.body}'),
-                                  )
-                                ],
-                              ),
-                            );
-                          }))),
+                                );
+                              }))),
               Container(
                 width: MediaQuery.of(context).size.width,
                 padding: EdgeInsets.all(10),
