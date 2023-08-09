@@ -26,9 +26,12 @@ Future<ApiResponse> login(String email, String password) async {
         break;
       default:
         apiResponse.error = somethingWentWrong;
+        print('Request failed with status: ${response.statusCode}.');
+        print('Response body: ${response.body}');
         break;
     }
   } catch (e) {
+    print(e);
     apiResponse.error = serverError;
   }
 
