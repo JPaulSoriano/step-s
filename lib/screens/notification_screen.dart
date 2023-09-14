@@ -111,8 +111,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                                     ),
                                   ),
                                   Text(
-                                    notification['data']['title'].replaceAll(
-                                        RegExp('<p>|</p>|<br />'), ''),
+                                    notification['data']['title']?.replaceAll(
+                                        RegExp('<p>|</p>|<br>'), ''),
                                     style: TextStyle(
                                       color: Colors.grey,
                                       fontSize: 14,

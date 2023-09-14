@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'dart:math';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter_html/flutter_html.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:flutter/material.dart';
 import 'package:step/constants.dart';
@@ -409,12 +410,20 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
                             style: TextStyle(fontSize: 15, color: Colors.grey),
                           ),
                         ),
+                        // Container(
+                        //   width: MediaQuery.of(context).size.width - 40,
+                        //   margin:
+                        //       EdgeInsets.only(left: 12, top: 15, bottom: 10),
+                        //   child: Text(
+                        //       '${announcement.body?.replaceAll(RegExp('<p>|</p>|<br>'), '') ?? 'No Body'}'),
+                        // ),
                         Container(
                           width: MediaQuery.of(context).size.width - 40,
                           margin:
                               EdgeInsets.only(left: 12, top: 15, bottom: 10),
-                          child: Text(
-                              '${announcement.body?.replaceAll(RegExp('<p>|</p>|<br />'), '') ?? 'No Body'}'),
+                          child: Html(
+                            data: announcement.body ?? 'Null',
+                          ),
                         ),
                         InkWell(
                           onTap: () {
