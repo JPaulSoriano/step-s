@@ -49,7 +49,9 @@ class _AssignmentDetailScreenState extends State<AssignmentDetailScreen> {
           });
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('${response.error}')),
+        SnackBar(
+            content: Text(
+                '${response.error} The file must be a file of type: doc, docx, pdf, ppt, pptx, xls, xlsx.')),
       );
     }
   }
