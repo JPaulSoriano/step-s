@@ -47,7 +47,7 @@ dependencies:
   cached_network_image: ^3.2.3
   notification_permissions: ^0.6.1
   google_fonts: ^4.0.3
-  url_launcher: ^6.1.10
+  url_launcher: ^6.1.14
   flutter_html: ^3.0.0-alpha.3
   path_provider: ^2.1.1
 

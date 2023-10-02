@@ -462,6 +462,15 @@ class _RoomDetailScreenState extends State<RoomDetailScreen> {
               itemBuilder: (BuildContext context, int index) {
                 Assessment assessment = _assessmentsList[index];
                 return InkWell(
+                    onTap: () async {
+                      final assessmentLink = Uri.parse('https://udd.steps.com.ph/classwork/student/assessment/${assessment.id}'); // Replace with your assessment URL
+                      if (await canLaunchUrl(assessmentLink)) {
+                          await launchUrl(assessmentLink);
+                        } else {
+                          // Handle error if the URL cannot be launched
+                          print('Could not launch $assessmentLink');
+                        }
+                    },
                   child: Padding(
                     padding: const EdgeInsets.all(15.0),
                     child: Container(

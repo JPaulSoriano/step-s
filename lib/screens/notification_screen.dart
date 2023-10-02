@@ -35,9 +35,9 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
 
   @override
   Widget build(BuildContext context) {
-    if (notifications == null) {
-      return Center(child: CircularProgressIndicator());
-    }
+    // if (notifications == null) {
+    //   return Center(child: CircularProgressIndicator());
+    // }
 
     return WillPopScope(
       onWillPop: () async {
