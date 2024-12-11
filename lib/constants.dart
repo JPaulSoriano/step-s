@@ -14,6 +14,7 @@ const joinRoomURL = baseURL + '/join';
 const NotificationURL = baseURL + '/notifications';
 const ReadURL = baseURL + '/read';
 const attendURL = baseURL + '/attendance';
+const gradesURL = baseURL + '/grades';
 
 // ----- Errors -----
 const serverError = 'Server error';
