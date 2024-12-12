@@ -13,7 +13,7 @@ Future<Map<String, dynamic>> getNotifications() async {
   return body;
 }
 
-Future<void> read() async {
+Future<void> readNotification() async {
   String token = await getToken();
   final response = await http.get(Uri.parse(ReadURL), headers: {
     'Accept': 'application/json',
